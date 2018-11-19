@@ -70,9 +70,9 @@ else {
 Write-Color -Text "Key Vault Service Principal: ", "$ID" -Color Green, Red
 
 Write-Color -Text "`r`n---------------------------------------------------- "-Color Yellow
-Write-Color -Text "Deploying ", "$DEPLOYMENT ", "template..." -Color Green, Red, Green
+Write-Color -Text "Deploying ", "$DEPLOYMENT-$Prefix ", "template..." -Color Green, Red, Green
 Write-Color -Text "---------------------------------------------------- "-Color Yellow
-New-AzureRmResourceGroupDeployment -Name $DEPLOYMENT `
+New-AzureRmResourceGroupDeployment -Name $DEPLOYMENT-$Prefix `
   -TemplateFile $BASE_DIR\azuredeploy.json `
   -TemplateParameterFile $BASE_DIR\azuredeploy.parameters.json `
   -prefix $Prefix `
@@ -82,5 +82,5 @@ New-AzureRmResourceGroupDeployment -Name $DEPLOYMENT `
 
   # For development purposes, we create a self-signed cluster certificate here.
 Write-Color -Text "Perparing Certificates..." -Color Yellow
-$certThumbprint, $certPassword, $certPath = CreateSelfSignedCertificate $ResourceGroupName
-$kvCert = ImportCertificateIntoKeyVault $ResourceGroupName $certPath $certPassword
+$certThumbprint, $certPassword, $certPath = CreateSelfSignedCertificate $Prefix
+$kvCert = ImportCertificateIntoKeyVault $ResourceGroupName $Prefix $certPath $certPassword

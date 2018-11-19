@@ -1,0 +1,157 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "prefix": {
+      "type": "string",
+      "metadata": {
+        "description": "Small unique string."
+      }
+    }
+  },
+  "variables": {
+    "PublicIpName": "[concat(variables('LBName'), '-ip')]",
+    "PublicIpId": "[resourceId('Microsoft.Network/publicIPAddresses',variables('PublicIpName'))]",
+    "LBName": "[concat(parameters('prefix'), '-lb')]",
+    "LBId": "[resourceId('Microsoft.Network/loadBalancers', variables('LBName'))]",
+    "fabricTcpGatewayPort": "19000",
+    "fabricHttpGatewayPort": "19080"
+  },
+  "resources": [
+    {
+      "comments": "## Public IP ##",
+      "name": "[variables('PublicIpName')]",
+      "type": "Microsoft.Network/publicIPAddresses",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "2016-03-30",
+      "dependsOn": [],
+      "tags": {
+        "resourceType": "publicIPAddresses",
+        "lbName": "[variables('LBName')]",
+        "displayName": "PublicIPAddress"
+      },
+      "properties": {
+        "dnsSettings": {
+          "domainNameLabel": "[parameters('prefix')]"
+        },
+        "publicIPAllocationMethod": "Dynamic"
+      }
+    },
+    {
+      "comments": "## Load Balancer ##",
+      "name": "[variables('LBName')]",
+      "type": "Microsoft.Network/loadBalancers",
+      "apiVersion": "2015-05-01-preview",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[concat('Microsoft.Network/publicIPAddresses/', variables('PublicIpName'))]"
+      ],
+      "tags": {
+        "resourceType": "loadBalancers",
+        "lbName": "[variables('LBName')]",
+        "displayName": "loadBalancers"
+      },
+      "properties": {
+        "frontendIPConfigurations": [
+          {
+            "name": "lbFrontEnd",
+            "properties": {
+              "publicIPAddress": {
+                "id": "[variables('PublicIpId')]"
+              }
+            }
+          }
+        ],
+        "backendAddressPools": [
+          {
+            "name": "lbBackEnd"
+          }
+        ],
+        "probes": [
+          {
+             "name": "FabricManagementProbe",
+             "properties": {
+                "intervalInSeconds": 5,
+                "numberOfProbes": 2,
+                "port": "[variables('fabricTcpGatewayPort')]",
+                "protocol": "Tcp"
+             }
+          },
+          {
+             "name": "FabricExplorerProbe",
+             "properties": {
+                "intervalInSeconds": 5,
+                "numberOfProbes": 2,
+                "port": "[variables('fabricHttpGatewayPort')]",
+                "protocol": "Tcp"
+             }
+          }
+        ],
+        "loadBalancingRules": [
+          {
+            "name": "LBFabricManagementRule",
+            "properties": {
+              "backendAddressPool": {
+                "id": "[concat(variables('LBId'), '/backendAddressPools/lbBackEnd')]"
+              },
+              "backendPort": "[variables('fabricTcpGatewayPort')]",
+              "enableFloatingIP": false,
+              "frontendIPConfiguration": {
+                "id": "[concat(variables('LBId'), '/frontendIpConfigurations/lbFrontEnd')]"
+              },
+              "frontendPort": "[variables('fabricTcpGatewayPort')]",
+              "idleTimeoutInMinutes": 5,
+              "probe": {
+                "id": "[concat(variables('LBId'), '/probes/FabricManagementProbe')]"
+              },
+              "protocol": "Tcp"
+            }
+          },
+          {
+            "name": "LBFabricExplorerRule",
+            "properties": {
+              "backendAddressPool": {
+                "id": "[concat(variables('LBId'), '/backendAddressPools/lbBackEnd')]"
+              },
+              "backendPort": "[variables('fabricHttpGatewayPort')]",
+              "enableFloatingIP": false,
+              "frontendIPConfiguration": {
+                "id": "[concat(variables('LBId'), '/frontendIpConfigurations/lbFrontEnd')]"
+              },
+              "frontendPort": "[variables('fabricHttpGatewayPort')]",
+              "idleTimeoutInMinutes": 5,
+              "probe": {
+                "id": "[concat(variables('LBId'), '/probes/FabricExplorerProbe')]"
+              },
+              "protocol": "Tcp"
+            }
+          }
+        ],
+        "inboundNatPools": [
+          {
+            "name": "LoadBalancerBEAddressNatPool",
+            "properties": {
+              "backendPort": 3389,
+              "frontendIPConfiguration": {
+                "id": "[concat(variables('LBId'), '/frontendIpConfigurations/lbFrontEnd')]"
+              },
+              "frontendPortRangeEnd": 4500,
+              "frontendPortRangeStart": 3389,
+              "protocol": "Tcp"
+            }
+         }
+        ]
+      }
+    }
+  ],
+  "outputs": {
+    "loadBalancer": {
+      "type": "object",
+      "value": {
+        "id": "[variables('LBId')]",
+        "name": "[variables('LBName')]",
+        "ip": "[variables('PublicIpId')]"
+      }
+    }
+  }
+}

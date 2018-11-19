@@ -17,7 +17,9 @@
 
 param(
   [string] $ResourceGroupName = "$env:AZURE_RANDOM-$env:AZURE_GROUP",
-  [string] $Location = $env:AZURE_LOCATION
+  [string] $Location = $env:AZURE_LOCATION,
+  [string] $Prefix = $env:AZURE_GROUP,
+  [string] $Random = $env:AZURE_RANDOM
 )
 
 if (Test-Path "$PSScriptRoot\.env.ps1") { . "$PSScriptRoot\.env.ps1" }
@@ -26,6 +28,8 @@ if (Test-Path "$PSScriptRoot\.env.ps1") { . "$PSScriptRoot\.env.ps1" }
 Get-ChildItem Env:AZURE*
 
 Write-Host "Install Base Resources here we go...." -ForegroundColor "green"
-& ./iac-keyvault/install.ps1
-
-
+& ./iac-keyvault/install.ps1 -Prefix "sf$Random"
+& ./iac-storage/install.ps1 -Prefix "sf$Random" -Suffix "logs"
+& ./iac-storage/install.ps1 -Prefix "sf$Random" -Suffix "diag"
+& ./iac-network/install.ps1 -Prefix "sf$Random"
+& ./iac-publicLB/install.ps1 -Prefix "sf$Random"

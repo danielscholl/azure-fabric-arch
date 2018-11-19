@@ -6,9 +6,7 @@
       "type": "string",
       "metadata": {
         "description": "Small unique string."
-      },
-      "minLength": 2,
-      "maxLength": 7
+      }
     },
     "servicePrincipalAppId": {
       "type": "string",
@@ -33,7 +31,7 @@
   },
   "variables": {
     "cleanUnique": "[toLower(replace(parameters('prefix'),'-', ''))]",
-    "KeyVaultName": "[concat(variables('cleanUnique'), '-kv-', uniqueString(resourceGroup().id))]",
+    "KeyVaultName": "[concat(variables('cleanUnique'), uniqueString(resourceGroup().id))]",
     "KeyVaultId": "[resourceId('Microsoft.KeyVault/vaults', variables('KeyVaultName'))]"
   },
   "resources": [
@@ -41,10 +39,12 @@
       "comments": "## Key Vault ##",
       "type": "Microsoft.KeyVault/vaults",
       "name": "[variables('KeyVaultName')]",
-      "apiVersion": "2018-02-14",
+      "apiVersion": "2016-10-01",
       "location": "[resourceGroup().location]",
       "tags": {
-        "Company": "[parameters('prefix')]"
+        "resourceType": "KeyVault",
+        "KeyVaultName": "[variables('KeyVaultName')]",
+        "displayName": "Key Vault"
       },
       "properties": {
         "sku": {
@@ -77,7 +77,7 @@
         {
           "type": "secrets",
           "name": "adminUserName",
-          "apiVersion": "2018-02-14",
+          "apiVersion": "2016-10-01",
           "properties": {
             "value": "[parameters('adminUserName')]"
           },
@@ -88,7 +88,7 @@
         {
           "type": "secrets",
           "name": "adminPassword",
-          "apiVersion": "2018-02-14",
+          "apiVersion": "2016-10-01",
           "properties": {
             "value": "[parameters('adminPassword')]"
           },

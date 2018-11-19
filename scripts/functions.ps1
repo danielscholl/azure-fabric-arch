@@ -108,13 +108,13 @@ function CreateSelfSignedCertificate([string]$DnsName)
     $certPassword
     $filePath
 }
-function ImportCertificateIntoKeyVault([string]$ResourceGroupName, [string]$CertFilePath, [string]$CertPassword)
+function ImportCertificateIntoKeyVault([string]$ResourceGroupName, [string]$Name, [string]$CertFilePath, [string]$CertPassword)
 {
   $KeyVaultName = GetKeyVault $ResourceGroupName
   Write-Host "Importing certificate..."
   Write-Host "  generating secure password..."
   $securePassword = ConvertTo-SecureString $CertPassword -AsPlainText -Force
   Write-Host "  uploading to KeyVault..."
-  Import-AzureKeyVaultCertificate -VaultName $KeyVaultName -Name $ResourceGroupName -FilePath $CertFilePath -Password $securePassword
+  Import-AzureKeyVaultCertificate -VaultName $KeyVaultName -Name $Name -FilePath $CertFilePath -Password $securePassword
   Write-Host "  imported."
 }
