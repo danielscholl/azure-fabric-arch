@@ -135,8 +135,8 @@
               "frontendIPConfiguration": {
                 "id": "[concat(variables('LBId'), '/frontendIpConfigurations/lbFrontEnd')]"
               },
-              "frontendPortRangeEnd": 4500,
-              "frontendPortRangeStart": 3389,
+              "frontendPortRangeEnd": 4100,
+              "frontendPortRangeStart": 4000,
               "protocol": "Tcp"
             }
          }

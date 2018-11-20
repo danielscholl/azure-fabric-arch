@@ -40,9 +40,9 @@ Register-AzureRmResourceProvider -ProviderNamespace Microsoft.Storage
 ## Deploy Template          ##
 ##############################
 Write-Color -Text "`r`n---------------------------------------------------- "-Color Yellow
-Write-Color -Text "Deploying ", "$DEPLOYMENT-$Prefix ", "template..." -Color Green, Red, Green
+Write-Color -Text "Deploying ", "$DEPLOYMENT-$Prefix-$Suffix ", "template..." -Color Green, Red, Green
 Write-Color -Text "---------------------------------------------------- "-Color Yellow
-New-AzureRmResourceGroupDeployment -Name $DEPLOYMENT-$Prefix `
+New-AzureRmResourceGroupDeployment -Name $DEPLOYMENT-$Prefix-$Suffix `
   -TemplateFile $BASE_DIR\azuredeploy.json `
   -TemplateParameterFile $BASE_DIR\azuredeploy.parameters.json `
   -prefix $Prefix -suffix $Suffix `

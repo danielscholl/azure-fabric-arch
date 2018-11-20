@@ -45,16 +45,8 @@ Write-Color -Text $CertId -Color White
 
 Write-Color -Text "Retrieving Diagnostic Storage Account Parameters..." -Color Green
 $StorageAccountName = GetStorageAccount $ResourceGroupName
-$StorageAccountKey0 = GetStorageAccountKey $ResourceGroupName $StorageAccountName[0]
-$StorageAccountKey1 = GetStorageAccountKey $ResourceGroupName $StorageAccountName[1]
+Write-Color -Text $StorageAccountName -Color White
 
-$SecureStorageKey0 = $StorageAccountKey0 | ConvertTo-SecureString -AsPlainText -Force
-$SecureStorageKey1 = $StorageAccountKey1 | ConvertTo-SecureString -AsPlainText -Force
-
-Write-Color -Text $StorageAccountName[0] -Color White
-Write-Color -Text $StorageAccountKey0 -Color White
-Write-Color -Text $StorageAccountName[1] -Color White
-Write-Color -Text $StorageAccountKey1 -Color White
 
 Write-Color -Text "Retrieving Network Parameters..." -Color Green
 $Subnet = "defaultSubnet"
@@ -67,6 +59,7 @@ Write-Color -Text "Retrieving Credential Parameters..." -Color Green
 $AdminUserName = (Get-AzureKeyVaultSecret -VaultName $VaultName -Name 'adminUserName').SecretValueText
 $AdminPassword = (Get-AzureKeyVaultSecret -VaultName $VaultName -Name 'adminPassword').SecretValue
 Write-Color -Text "$AdminUserName\*************" -Color White
+
 
 Write-Color -Text "`r`n---------------------------------------------------- "-Color Yellow
 Write-Color -Text "Deploying ", "$DEPLOYMENT-$Prefix ", "template..." -Color Green, Red, Green
