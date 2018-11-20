@@ -52,4 +52,5 @@ New-AzureRmResourceGroupDeployment -Name $DEPLOYMENT-$Prefix `
   -vnetPrefix    "$NetworkSegment.0/24" `
   -subnet1Prefix "$NetworkSegment.0/26" `
   -subnet2Prefix "$NetworkSegment.224/28" `
-  -ResourceGroupName $ResourceGroupName
+  -ResourceGroupName $ResourceGroupName `
+  -Verbose

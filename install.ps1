@@ -34,3 +34,18 @@ Write-Host "Install Base Resources here we go...." -ForegroundColor "green"
 & ./iac-network/install.ps1 -Prefix "sf$Random"
 & ./iac-publicLB/install.ps1 -Prefix "sf$Random"
 & ./iac-serviceFabric/install.ps1 -Prefix "sf$Random"
+
+$Endpoint = "sf$Random.eastus2.cloudapp.azure.com:19000"
+Write-Host "Endpoint: $Endpoint" -ForegroundColor "cyan"
+Write-Host "Thumbpoint: $env:AZURE_SF_THUMBPRINT" -ForegroundColor "cyan"
+
+Write-Host "
+Connect-ServiceFabricCluster ``
+  -ConnectionEndpoint $Endpoint ``
+  -FindType FindByThumbprint ``
+  -FindValue $ThumbPrint ``
+  -X509Credential ``
+  -ServerCertThumbprint $ThumbPrint ``
+  -StoreLocation CurrentUser ``
+  -StoreName My
+" -ForegroundColor "cyan"

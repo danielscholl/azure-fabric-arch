@@ -6,6 +6,7 @@
 .env.ps1
 certs/*.pfx
 certs/*.txt
+connect.ps1
 
 # User-specific files
 *.suo

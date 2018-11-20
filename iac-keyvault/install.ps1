@@ -78,9 +78,12 @@ New-AzureRmResourceGroupDeployment -Name $DEPLOYMENT-$Prefix `
   -prefix $Prefix `
   -servicePrincipalAppId $ID `
   -adminUserName $UserName -adminPassword $UserPass  `
-  -ResourceGroupName $ResourceGroupName
+  -ResourceGroupName $ResourceGroupName `
+  -Verbose
 
   # For development purposes, we create a self-signed cluster certificate here.
 Write-Color -Text "Perparing Certificates..." -Color Yellow
 $certThumbprint, $certPassword, $certPath = CreateSelfSignedCertificate $Prefix
 $kvCert = ImportCertificateIntoKeyVault $ResourceGroupName $Prefix $certPath $certPassword
+
+$env:AZURE_SF_THUMBPRINT = $certThumbprint

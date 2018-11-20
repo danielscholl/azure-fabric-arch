@@ -72,4 +72,5 @@ New-AzureRmResourceGroupDeployment -Name $DEPLOYMENT-$Prefix `
   -vaultName $VaultName -certificateUrlValue $Cert.SecretId -certificateThumbprint $Cert.Thumbprint `
   -adminUserName $AdminUserName -adminPassword $AdminPassword `
   -diagStorage $StorageAccountName[0] -logStorage $StorageAccountName[1] `
-  -ResourceGroupName $ResourceGroupName
+  -ResourceGroupName $ResourceGroupName `
+  -Verbose

@@ -50,4 +50,5 @@ New-AzureRmResourceGroupDeployment -Name $DEPLOYMENT-$Prefix `
   -TemplateFile $BASE_DIR\azuredeploy.json `
   -TemplateParameterFile $BASE_DIR\azuredeploy.parameters.json `
   -prefix $Prefix `
-  -ResourceGroupName $ResourceGroupName
+  -ResourceGroupName $ResourceGroupName `
+  -Verbose
