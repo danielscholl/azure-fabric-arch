@@ -60,16 +60,30 @@
       "properties": {
         "securityRules": [
           {
-            "name": "default-allow-rdp",
+            "name": "allow-rdp",
             "properties": {
               "description": "Allow RDP",
               "protocol": "Tcp",
               "sourcePortRange": "*",
               "destinationPortRange": "3389",
-              "sourceAddressPrefix": "VirtualNetwork",
+              "sourceAddressPrefix": "Internet",
               "destinationAddressPrefix": "*",
               "access": "Allow",
               "priority": 1000,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "allow-sf-explorer",
+            "properties": {
+              "description": "Allow Service Fabric Explorer",
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "19080",
+              "sourceAddressPrefix": "Internet",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 1010,
               "direction": "Inbound"
             }
           }
