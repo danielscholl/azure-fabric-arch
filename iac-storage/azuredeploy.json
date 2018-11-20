@@ -15,8 +15,7 @@
       "metadata": {
         "description": "Small unique string."
       },
-      "minLength": 2,
-      "maxLength": 9
+      "defaultValue": ""
     },
     "storageAccountType": {
       "type": "string",

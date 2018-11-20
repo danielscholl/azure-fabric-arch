@@ -15,7 +15,9 @@ Param(
   [string] $Subscription = $env:AZURE_SUBSCRIPTION,
   [string] $ResourceGroupName = "$env:AZURE_RANDOM-$env:AZURE_GROUP",
   [string] $Location = $env:AZURE_LOCATION,
-  [string] $Prefix = $env:AZURE_GROUP
+  [string] $Prefix = $env:AZURE_GROUP,
+  [ValidateSet('bronze','silver')]
+  [String] $Level = "bronze"
 )
 
 if (Test-Path ..\scripts\functions.ps1) { . ..\scripts\functions.ps1 }
@@ -40,8 +42,11 @@ Register-AzureRmResourceProvider -ProviderNamespace Microsoft.Compute
 ##############################
 Write-Color -Text "Gathering information for Key Vault..." -Color Green
 $VaultName = GetKeyVault $ResourceGroupName
+Write-Color -Text $VaultName -Color White
+
+Write-Color -Text "Gathering information for Key Vault..." -Color Green
 $Cert = GetVaultCert $VaultName $Prefix
-Write-Color -Text $CertId -Color White
+Write-Color -Text $Cert.Name -Color White
 
 Write-Color -Text "Retrieving Diagnostic Storage Account Parameters..." -Color Green
 $StorageAccountName = GetStorageAccount $ResourceGroupName
@@ -65,12 +70,11 @@ Write-Color -Text "`r`n---------------------------------------------------- "-Co
 Write-Color -Text "Deploying ", "$DEPLOYMENT-$Prefix ", "template..." -Color Green, Red, Green
 Write-Color -Text "---------------------------------------------------- "-Color Yellow
 New-AzureRmResourceGroupDeployment -Name $DEPLOYMENT-$Prefix `
-  -TemplateFile $BASE_DIR\azuredeploy.json `
+  -TemplateFile $BASE_DIR\$LEVEL.json `
   -TemplateParameterFile $BASE_DIR\azuredeploy.parameters.json `
   -prefix $Prefix `
   -vnetName $VnetName -subnet $Subnet -lbName $LbName `
   -vaultName $VaultName -certificateUrlValue $Cert.SecretId -certificateThumbprint $Cert.Thumbprint `
   -adminUserName $AdminUserName -adminPassword $AdminPassword `
-  -diagStorage $StorageAccountName[0] -logStorage $StorageAccountName[1] `
-  -ResourceGroupName $ResourceGroupName `
+  -storageAccount $StorageAccountName -ResourceGroupName $ResourceGroupName `
   -Verbose

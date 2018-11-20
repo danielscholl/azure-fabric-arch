@@ -43,7 +43,7 @@
       "metadata": {
         "description": "The thumbprint of the the certificate that was uploaded"
       }
-   },
+    },
     "adminUserName": {
       "defaultValue": "azureuser",
       "type": "string",
@@ -69,16 +69,10 @@
       "type": "string",
       "defaultValue": "Standard_D2_V2"
     },
-    "diagStorage": {
+    "storageAccount": {
       "type": "string",
       "metadata": {
-        "description": "Storage Account Name for Diagnostics."
-      }
-    },
-    "logStorage": {
-      "type": "string",
-      "metadata": {
-        "description": "Storage Account Name for Logs."
+        "description": "Storage Account Name for Diagnostics and Logs."
       }
     }
   },
@@ -87,8 +81,7 @@
     "subnetId": "[concat(variables('vnetId'),'/subnets/', parameters('subnet'))]",
     "lbId": "[resourceId(resourceGroup().name, 'Microsoft.Network/loadBalancers', parameters('lbName'))]",
     "vaultId": "[resourceId(resourceGroup().name, 'Microsoft.KeyVault/vaults', parameters('vaultName'))]",
-    "diagStorageId": "[resourceId(resourceGroup().name, 'Microsoft.Storage/storageAccounts', parameters('diagStorage'))]",
-    "logStorageId": "[resourceId(resourceGroup().name, 'Microsoft.Storage/storageAccounts', parameters('logStorage'))]",
+    "storageId": "[resourceId(resourceGroup().name, 'Microsoft.Storage/storageAccounts', parameters('storageAccount'))]",
     "clusterName": "[concat(parameters('prefix'), '-cluster')]",
     "vmNodeType0Name": "[concat(parameters('prefix'), '-vmss')]",
     "vmName": "vm",
@@ -193,8 +186,8 @@
                   "type": "IaaSDiagnostics",
                   "autoUpgradeMinorVersion": true,
                   "protectedSettings": {
-                    "storageAccountName": "[parameters('diagStorage')]",
-                    "storageAccountKey": "[listkeys(variables('diagStorageId'), '2016-01-01').keys[0].value]"
+                    "storageAccountName": "[parameters('storageAccount')]",
+                    "storageAccountKey": "[listkeys(variables('storageId'), '2016-01-01').keys[0].value]"
                   },
                   "publisher": "Microsoft.Azure.Diagnostics",
                   "settings": {
@@ -244,8 +237,8 @@
                   "type": "ServiceFabricNode",
                   "autoUpgradeMinorVersion": true,
                   "protectedSettings": {
-                    "StorageAccountKey1": "[listKeys(variables('logStorageId'),'2016-01-01').keys[0].value]",
-                    "StorageAccountKey2": "[listKeys(variables('logStorageId'),'2016-01-01').keys[1].value]"
+                    "StorageAccountKey1": "[listKeys(variables('storageId'),'2016-01-01').keys[0].value]",
+                    "StorageAccountKey2": "[listKeys(variables('storageId'),'2016-01-01').keys[1].value]"
                   },
                   "publisher": "Microsoft.Azure.ServiceFabric",
                   "settings": {
@@ -277,66 +270,66 @@
       "type": "Microsoft.ServiceFabric/clusters",
       "name": "[variables('clusterName')]",
       "location": "[resourceGroup().location]",
-      "dependsOn": [ ],
+      "dependsOn": [],
       "tags": {
-         "resourceType": "Service Fabric",
-         "clusterName": "[variables('clusterName')]",
-         "displayName": "Cluster"
+        "resourceType": "Service Fabric",
+        "clusterName": "[variables('clusterName')]",
+        "displayName": "Cluster"
       },
       "properties": {
-         "certificate": {
-            "thumbprint": "[parameters('certificateThumbprint')]",
-            "x509StoreName": "[variables('certificateStoreValue')]"
-         },
-         "clientCertificateCommonNames": [],
-         "clientCertificateThumbprints": [],
-         "clusterState": "Default",
-         "provisioningState": "Default",
-         "diagnosticsStorageAccountConfig": {
-            "blobEndpoint": "[reference(variables('logStorageId'), '2016-01-01').primaryEndpoints.blob]",
-            "protectedAccountKeyName": "StorageAccountKey1",
-            "queueEndpoint": "[reference(variables('logStorageId'), '2016-01-01').primaryEndpoints.queue]",
-            "storageAccountName": "[parameters('logStorage')]",
-            "tableEndpoint": "[reference(variables('logStorageId'), '2016-01-01').primaryEndpoints.table]"
-         },
-         "fabricSettings": [
-            {
-               "parameters": [
-                  {
-                     "name": "ClusterProtectionLevel",
-                     "value": "EncryptAndSign"
-                  }
-               ],
-               "name": "Security"
-            }
-         ],
-         "addonFeatures": [
-            "DnsService"
-         ],
-         "managementEndpoint": "[concat('https://', parameters('prefix'), '.', resourceGroup().location, '.cloudapp.azure.com', ':', variables('fabricHttpGatewayPort'))]",
-         "nodeTypes": [
-            {
-               "name": "[variables('vmNodeType0Name')]",
-               "applicationPorts": {
-                  "endPort": "[variables('applicationEndPort')]",
-                  "startPort": "[variables('applicationStartPort')]"
-               },
-               "clientConnectionEndpointPort": "[variables('fabricTcpGatewayPort')]",
-               "durabilityLevel": "Bronze",
-               "ephemeralPorts": {
-                  "endPort": "[variables('ephemeralEndPort')]",
-                  "startPort": "[variables('ephemeralStartPort')]"
-               },
-               "httpGatewayEndpointPort": "[variables('fabricHttpGatewayPort')]",
-               "isPrimary": true,
-               "vmInstanceCount": "[parameters('vmCount')]"
-            }
-         ],
-         "reliabilityLevel": "None",
-         "upgradeMode": "Automatic",
-         "vmImage": "Windows"
+        "certificate": {
+          "thumbprint": "[parameters('certificateThumbprint')]",
+          "x509StoreName": "[variables('certificateStoreValue')]"
+        },
+        "clientCertificateCommonNames": [],
+        "clientCertificateThumbprints": [],
+        "clusterState": "Default",
+        "provisioningState": "Default",
+        "diagnosticsStorageAccountConfig": {
+          "blobEndpoint": "[reference(variables('storageId'), '2016-01-01').primaryEndpoints.blob]",
+          "protectedAccountKeyName": "StorageAccountKey1",
+          "queueEndpoint": "[reference(variables('storageId'), '2016-01-01').primaryEndpoints.queue]",
+          "storageAccountName": "[parameters('storageAccount')]",
+          "tableEndpoint": "[reference(variables('storageId'), '2016-01-01').primaryEndpoints.table]"
+        },
+        "fabricSettings": [
+          {
+            "parameters": [
+              {
+                "name": "ClusterProtectionLevel",
+                "value": "EncryptAndSign"
+              }
+            ],
+            "name": "Security"
+          }
+        ],
+        "addonFeatures": [
+          "DnsService"
+        ],
+        "managementEndpoint": "[concat('https://', parameters('prefix'), '.', resourceGroup().location, '.cloudapp.azure.com', ':', variables('fabricHttpGatewayPort'))]",
+        "nodeTypes": [
+          {
+            "name": "[variables('vmNodeType0Name')]",
+            "applicationPorts": {
+              "endPort": "[variables('applicationEndPort')]",
+              "startPort": "[variables('applicationStartPort')]"
+            },
+            "clientConnectionEndpointPort": "[variables('fabricTcpGatewayPort')]",
+            "durabilityLevel": "Bronze",
+            "ephemeralPorts": {
+              "endPort": "[variables('ephemeralEndPort')]",
+              "startPort": "[variables('ephemeralStartPort')]"
+            },
+            "httpGatewayEndpointPort": "[variables('fabricHttpGatewayPort')]",
+            "isPrimary": true,
+            "vmInstanceCount": "[parameters('vmCount')]"
+          }
+        ],
+        "reliabilityLevel": "None",
+        "upgradeMode": "Automatic",
+        "vmImage": "Windows"
       }
-   }
+    }
   ],
   "outputs": {}
 }
