@@ -40,12 +40,10 @@ function Get-ScriptDirectory {
   $Invocation = (Get-Variable MyInvocation -Scope 1).Value
   Split-Path $Invocation.MyCommand.Path
 }
-
 function GeneratePassword()
 {
     [System.Web.Security.Membership]::GeneratePassword(15,2)
 }
-
 function LoginAzure()
 {
     Write-Color "Validating if you are logged in..." -Color Green
@@ -108,6 +106,15 @@ function CreateSelfSignedCertificate([string]$DnsName)
     $certPassword
     $filePath
 }
+function GetVaultCert([string]$VaultName, [string]$CertName) {
+  # Required Argument $1 = Vault Name
+  # Required Argument $2 = Certificate Name
+
+  if ( !$ResourceGroupName) { throw "VaultName Required" }
+  if ( !$CertName) { throw "CertName Required" }
+
+  return (Get-AzureKeyVaultCertificate -VaultName $VaultName -Name $CertName)
+}
 function ImportCertificateIntoKeyVault([string]$ResourceGroupName, [string]$Name, [string]$CertFilePath, [string]$CertPassword)
 {
   $KeyVaultName = GetKeyVault $ResourceGroupName
@@ -117,4 +124,34 @@ function ImportCertificateIntoKeyVault([string]$ResourceGroupName, [string]$Name
   Write-Host "  uploading to KeyVault..."
   Import-AzureKeyVaultCertificate -VaultName $KeyVaultName -Name $Name -FilePath $CertFilePath -Password $securePassword
   Write-Host "  imported."
+}
+function GetStorageAccount([string]$ResourceGroupName) {
+  # Required Argument $1 = RESOURCE_GROUP
+
+  if ( !$ResourceGroupName) { throw "ResourceGroupName Required" }
+
+  return (Get-AzureRmStorageAccount -ResourceGroupName $ResourceGroupName).StorageAccountName
+}
+function GetStorageAccountKey([string]$ResourceGroupName, $StorageAccountName) {
+  # Required Argument $1 = RESOURCE_GROUP
+  # Required Argument $2 = STORAGE_ACCOUNT
+
+  if ( !$ResourceGroupName) { throw "ResourceGroupName Required" }
+  if ( !$StorageAccountName) { throw "StorageAccountName Required" }
+
+  return (Get-AzureRmStorageAccountKey -ResourceGroupName $ResourceGroupName -AccountName $StorageAccountName).Value[0]
+}
+function GetVirtualNetwork([string]$ResourceGroupName) {
+  # Required Argument $1 = RESOURCE_GROUP
+
+  if ( !$ResourceGroupName) { throw "ResourceGroupName Required" }
+
+  return (Get-AzureRmVirtualNetwork -ResourceGroupName $ResourceGroupName).Name
+}
+function GetLoadBalancer([string]$ResourceGroupName) {
+  # Required Argument $1 = RESOURCE_GROUP
+
+  if ( !$ResourceGroupName) { throw "ResourceGroupName Required" }
+
+  return (Get-AzureRmLoadBalancer -ResourceGroupName $ResourceGroupName).Name
 }
