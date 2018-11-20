@@ -23,7 +23,7 @@ param(
 )
 
 if (Test-Path "$PSScriptRoot\.env.ps1") { . "$PSScriptRoot\.env.ps1" }
-. "$PSScriptRoot\scripts\functions.ps1"
+if (Test-Path "$PSScriptRoot\scripts\functions.ps1") { . "$PSScriptRoot\scripts\functions.ps1" }
 
 Get-ChildItem Env:AZURE*
 
