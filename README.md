@@ -90,7 +90,7 @@ The architecture depends upon the following items:
 
 ### Create Environment File
 
-Create an environment setting file in the root directory ie: `.env.ps1`
+Create an environment setting file in the root directory ie: `.env_dev.ps1`
 
 Default Environment Settings
 
@@ -104,9 +104,28 @@ Default Environment Settings
 | _AZURE_GROUP_        | fabric                               | Azure Resource Group Name                |
 | _AZURE_USERNAME_     | localAdmin                           | Default Local Admin UserName             |
 | _AZURE_PASSWORD_     | localPassword                        | Default Local Admin Password             |
+| _FABRIC_TIER_        | bronze                               | Service Fabric Durability Level          |
+| _FABRIC_NODE_COUNT_  | 1                                    | Service Fabric NodeSet Instance Count    |
 
 ### Create Resources
+Resources are broken up into sections only for the purpose of not having an excessively long running task.
+
+#### Install Base Resources
 
 ```powershell
-./install.ps1
+# Install the Base Resources
+./install.ps1 -Base $true -Environment 'dev'
+```
+
+#### Install Routing Resources
+```powershell
+# Install the Routing Resources
+./install.ps1 -Routing 'PublicLB' -Environment 'dev'
+```
+
+#### Install Cluster Resources
+
+```powershell
+# Install the Cluster Resources
+./install.ps1 -Cluster $true -Environment 'dev'
 ```

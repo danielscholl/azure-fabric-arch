@@ -17,7 +17,8 @@ Param(
   [string] $Location = $env:AZURE_LOCATION,
   [string] $Prefix = $env:AZURE_GROUP,
   [ValidateSet('bronze','silver')]
-  [String] $Level = "bronze"
+  [String] $Level = $env:FABRIC_TIER,
+  [int] $Instance = $env:FABRIC_NODE_COUNT
 )
 
 if (Test-Path ..\scripts\functions.ps1) { . ..\scripts\functions.ps1 }
@@ -44,14 +45,13 @@ Write-Color -Text "Gathering information for Key Vault..." -Color Green
 $VaultName = GetKeyVault $ResourceGroupName
 Write-Color -Text $VaultName -Color White
 
-Write-Color -Text "Gathering information for Key Vault..." -Color Green
+Write-Color -Text "Gathering information for Cluster Certificate..." -Color Green
 $Cert = GetVaultCert $VaultName $Prefix
 Write-Color -Text $Cert.Name -Color White
 
 Write-Color -Text "Retrieving Diagnostic Storage Account Parameters..." -Color Green
 $StorageAccountName = GetStorageAccount $ResourceGroupName
 Write-Color -Text $StorageAccountName -Color White
-
 
 Write-Color -Text "Retrieving Network Parameters..." -Color Green
 $Subnet = "defaultSubnet"
@@ -76,5 +76,6 @@ New-AzureRmResourceGroupDeployment -Name $DEPLOYMENT-$Prefix `
   -vnetName $VnetName -subnet $Subnet -lbName $LbName `
   -vaultName $VaultName -certificateUrlValue $Cert.SecretId -certificateThumbprint $Cert.Thumbprint `
   -adminUserName $AdminUserName -adminPassword $AdminPassword `
-  -storageAccount $StorageAccountName -ResourceGroupName $ResourceGroupName `
+  -storageAccount $StorageAccountName -vmCount $Instance `
+  -ResourceGroupName $ResourceGroupName `
   -Verbose

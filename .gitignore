@@ -3,10 +3,12 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
-.env.ps1
+
+.env_*.ps1
+
+
 certs/*.pfx
 certs/*.txt
-connect.ps1
 
 # User-specific files
 *.suo
