@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<ApplicationManifest xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ApplicationTypeName="SimpleApp.SfProdType" ApplicationTypeVersion="1.0.0" xmlns="http://schemas.microsoft.com/2011/01/fabric" ManifestId="5765510e-19ab-4624-bae0-1be9b83f48c5">
+<ApplicationManifest xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ApplicationTypeName="SimpleApp.SfProdType" ApplicationTypeVersion="1.0.0" xmlns="http://schemas.microsoft.com/2011/01/fabric">
   <Parameters>
     <Parameter Name="SimpleApp.SfProd.WebSite_ASPNETCORE_ENVIRONMENT" DefaultValue="" />
     <Parameter Name="SimpleApp.SfProd.WebSite_InstanceCount" DefaultValue="-1" />
