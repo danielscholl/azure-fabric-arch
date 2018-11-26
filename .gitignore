@@ -9,6 +9,8 @@
 
 certs/*.pfx
 certs/*.txt
+*.crt
+*.key
 
 # User-specific files
 *.suo
