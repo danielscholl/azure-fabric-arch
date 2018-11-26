@@ -16,6 +16,8 @@ Param(
   [string] $ResourceGroupName = "$env:AZURE_RANDOM-$env:AZURE_GROUP",
   [string] $Location = $env:AZURE_LOCATION,
   [string] $Prefix = $env:AZURE_GROUP,
+  [string] $Analytics = $env:AZURE_ANALYTICS,
+  [string] $AnalyticsKey = $env:AZURE_ANALYTICS_KEY,
   [ValidateSet('bronze','silver')]
   [String] $Level = $env:FABRIC_TIER,
   [int] $Instance = $env:FABRIC_NODE_COUNT
@@ -77,5 +79,6 @@ New-AzureRmResourceGroupDeployment -Name $DEPLOYMENT-$Prefix `
   -vaultName $VaultName -certificateUrlValue $Cert.SecretId -certificateThumbprint $Cert.Thumbprint `
   -adminUserName $AdminUserName -adminPassword $AdminPassword `
   -storageAccount $StorageAccountName -vmCount $Instance `
+  -omsWorkspaceId $Analytics -omsWorkspaceKey $AnalyticsKey `
   -ResourceGroupName $ResourceGroupName `
   -Verbose

@@ -74,6 +74,18 @@
       "metadata": {
         "description": "Storage Account Name for Diagnostics and Logs."
       }
+    },
+    "omsWorkspaceId": {
+      "type": "string",
+      "metadata": {
+        "description": "Analytics Workspace Id."
+      }
+    },
+    "omsWorkspaceKey": {
+      "type": "string",
+      "metadata": {
+        "description": "Analytics Workspace Key."
+      }
     }
   },
   "variables": {
@@ -253,6 +265,21 @@
                     }
                   },
                   "typeHandlerVersion": "1.0"
+                }
+              },
+              {
+                "name": "[concat('OMSVmExt', '_', variables('vmNodeType0Name'))]",
+                "properties": {
+                  "publisher": "Microsoft.EnterpriseCloud.Monitoring",
+                  "type": "MicrosoftMonitoringAgent",
+                  "typeHandlerVersion": "1.0",
+                  "autoUpgradeMinorVersion": true,
+                  "settings": {
+                    "workspaceId": "[parameters('omsWorkspaceId')]"
+                  },
+                  "protectedSettings": {
+                    "workspaceKey": "[parameters('omsWorkspaceKey')]"
+                  }
                 }
               }
             ]

@@ -36,6 +36,8 @@ $Env:AZURE_GROUP = [string]::Empty
 $Env:AZURE_RANDOM = [string]::Empty
 $Env:AZURE_USERNAME = [string]::Empty
 $Env:AZURE_PASSWORD = [string]::Empty
+$Env:AZURE_ANALYTICS = [string]::Empty
+$Env:AZURE_ANALYTICS_KEY = [string]::Empty
 $Env:FABRIC_TIER = [string]::Empty
 $Env:FABRIC_NODE_COUNT = 0
 

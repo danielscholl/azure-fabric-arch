@@ -69,22 +69,49 @@
         ],
         "probes": [
           {
-             "name": "FabricManagementProbe",
-             "properties": {
-                "intervalInSeconds": 5,
-                "numberOfProbes": 2,
-                "port": "[variables('fabricTcpGatewayPort')]",
-                "protocol": "Tcp"
-             }
+            "name": "FabricManagementProbe",
+            "properties": {
+              "intervalInSeconds": 5,
+              "numberOfProbes": 2,
+              "port": "[variables('fabricTcpGatewayPort')]",
+              "protocol": "Tcp"
+            }
           },
           {
-             "name": "FabricExplorerProbe",
-             "properties": {
-                "intervalInSeconds": 5,
-                "numberOfProbes": 2,
-                "port": "[variables('fabricHttpGatewayPort')]",
-                "protocol": "Tcp"
-             }
+            "name": "FabricExplorerProbe",
+            "properties": {
+              "intervalInSeconds": 5,
+              "numberOfProbes": 2,
+              "port": "[variables('fabricHttpGatewayPort')]",
+              "protocol": "Tcp"
+            }
+          },
+          {
+            "name": "AppProbe",
+            "properties": {
+              "intervalInSeconds": 5,
+              "numberOfProbes": 2,
+              "port": 8080,
+              "protocol": "Tcp"
+            }
+          },
+          {
+            "name": "HttpProbe",
+            "properties": {
+              "intervalInSeconds": 5,
+              "numberOfProbes": 2,
+              "port": 80,
+              "protocol": "Tcp"
+            }
+          },
+          {
+            "name": "HttpsProbe",
+            "properties": {
+              "intervalInSeconds": 5,
+              "numberOfProbes": 2,
+              "port": 443,
+              "protocol": "Tcp"
+            }
           }
         ],
         "loadBalancingRules": [
@@ -125,6 +152,63 @@
               },
               "protocol": "Tcp"
             }
+          },
+          {
+            "name": "LBHttpRule",
+            "properties": {
+              "backendAddressPool": {
+                "id": "[concat(variables('LBId'), '/backendAddressPools/lbBackEnd')]"
+              },
+              "backendPort": 80,
+              "enableFloatingIP": false,
+              "frontendIPConfiguration": {
+                "id": "[concat(variables('LBId'), '/frontendIpConfigurations/lbFrontEnd')]"
+              },
+              "frontendPort": 80,
+              "idleTimeoutInMinutes": 5,
+              "probe": {
+                "id": "[concat(variables('LBId'), '/probes/HttpProbe')]"
+              },
+              "protocol": "Tcp"
+            }
+          },
+          {
+            "name": "LBHttpsRule",
+            "properties": {
+              "backendAddressPool": {
+                "id": "[concat(variables('LBId'), '/backendAddressPools/lbBackEnd')]"
+              },
+              "backendPort": 443,
+              "enableFloatingIP": false,
+              "frontendIPConfiguration": {
+                "id": "[concat(variables('LBId'), '/frontendIpConfigurations/lbFrontEnd')]"
+              },
+              "frontendPort": 443,
+              "idleTimeoutInMinutes": 5,
+              "probe": {
+                "id": "[concat(variables('LBId'), '/probes/HttpsProbe')]"
+              },
+              "protocol": "Tcp"
+            }
+          },
+          {
+            "name": "LBAppRule",
+            "properties": {
+              "backendAddressPool": {
+                "id": "[concat(variables('LBId'), '/backendAddressPools/lbBackEnd')]"
+              },
+              "backendPort": 8080,
+              "enableFloatingIP": false,
+              "frontendIPConfiguration": {
+                "id": "[concat(variables('LBId'), '/frontendIpConfigurations/lbFrontEnd')]"
+              },
+              "frontendPort": 8080,
+              "idleTimeoutInMinutes": 5,
+              "probe": {
+                "id": "[concat(variables('LBId'), '/probes/AppProbe')]"
+              },
+              "protocol": "Tcp"
+            }
           }
         ],
         "inboundNatPools": [
@@ -139,7 +223,7 @@
               "frontendPortRangeStart": 4000,
               "protocol": "Tcp"
             }
-         }
+          }
         ]
       }
     }

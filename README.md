@@ -100,6 +100,7 @@ Default Environment Settings
 | _AZURE_SUBSCRIPTION_ | xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx | Azure Subscription Id                    |
 | _AZURE_PRINCIPAL_    | xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx | Azure Principal App Id                   |
 | _AZURE_LOCATION_     | EastUS2                              | Azure Region for Resources to be located |
+| _AZURE_ANALYTICS_    | xxxxxxx                              | Azure Log Analytics Name                 |
 | _AZURE_RANDOM_       | 123                                  | 3 Digit Random Identifier                |
 | _AZURE_GROUP_        | fabric                               | Azure Resource Group Name                |
 | _AZURE_USERNAME_     | localAdmin                           | Default Local Admin UserName             |

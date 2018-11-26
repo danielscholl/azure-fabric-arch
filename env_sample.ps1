@@ -5,6 +5,8 @@ $Env:AZURE_TENANT = "<your_tenant_id>"                            # Tenant ID of
 $Env:AZURE_SUBSCRIPTION = "<your_subscription_id>"                # Subscription ID to own the resources
 $Env:AZURE_PRINCIPAL = "<your_principal_id>"                      # Principal ID with rights to the KV
 $Env:AZURE_LOCATION = "eastus2"                                   # Region Location
+$Env:AZURE_ANALYTICS = "<your_oms_name>"                          # OMS Workspace Name
+$Env:AZURE_ANALYTICS_KEY = "<your_oms_key>"                       # OMS Workspace Key
 
 $Env:AZURE_USERNAME = "<your_admin_name>"                         # RDP UserName
 $Env:AZURE_PASSWORD = "<your_admin_pwd>"                          # RDP Password
