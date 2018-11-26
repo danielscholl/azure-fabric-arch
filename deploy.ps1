@@ -7,7 +7,7 @@ $PkgPath = "$PSScriptRoot\pkgs\$Name"
 $TypeName = "{0}Type" -f $Name
 
 if (Test-Path "$PSScriptRoot\.env_$Environment.ps1") { . "$PSScriptRoot\.env_$Environment.ps1" }
-if (Test-Path "$PSScriptRoot\scripts\functions.ps1") { . "$PSScriptRoot\scripts\functions.ps1" }
+if (Test-Path "$PSScriptRoot\infrastructure\functions.ps1") { . "$PSScriptRoot\infrastructure\functions.ps1" }
 
 Write-Color -Text "Deploying Service Fabric Package here we go...." -Color "cyan"
 

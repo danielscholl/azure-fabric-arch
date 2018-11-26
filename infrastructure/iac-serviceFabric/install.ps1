@@ -21,8 +21,8 @@ Param(
   [int] $Instance = $env:FABRIC_NODE_COUNT
 )
 
-if (Test-Path ..\scripts\functions.ps1) { . ..\scripts\functions.ps1 }
-if (Test-Path .\scripts\functions.ps1) { . .\scripts\functions.ps1 }
+if (Test-Path ..\functions.ps1) { . ..\functions.ps1 }
+if (Test-Path .\functions.ps1) { . .\functions.ps1 }
 if ( !$Subscription) { throw "Subscription Required" }
 if ( !$ResourceGroupName) { throw "ResourceGroupName Required" }
 if ( !$Location) { throw "Location Required" }

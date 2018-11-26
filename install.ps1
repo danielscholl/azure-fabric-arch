@@ -27,8 +27,6 @@ param(
   [string] $Random = $env:AZURE_RANDOM
 )
 
-if (Test-Path "$PSScriptRoot\scripts\functions.ps1") { . "$PSScriptRoot\scripts\functions.ps1" }
-
 # Clear any existing environment settings.
 $Env:AZURE_TENANT = [string]::Empty
 $Env:AZURE_SUBSCRIPTION = [string]::Empty
@@ -41,8 +39,9 @@ $Env:AZURE_PASSWORD = [string]::Empty
 $Env:FABRIC_TIER = [string]::Empty
 $Env:FABRIC_NODE_COUNT = 0
 
-# Load Project Environment Settings
+# Load Project Environment Settings and Functions
 if (Test-Path "$PSScriptRoot\.env_$Environment.ps1") { . "$PSScriptRoot\.env_$Environment.ps1" }
+if (Test-Path "$PSScriptRoot\infrastructure\functions.ps1") { . "$PSScriptRoot\infrastructure\functions.ps1" }
 
 # Display Project Environment Settings
 Get-ChildItem Env:AZURE*
@@ -50,9 +49,9 @@ Get-ChildItem Env:FABRIC*
 
 if ($Base -eq $true) {
   Write-Host "Install Base Resources here we go...." -ForegroundColor "cyan"
-  & ./iac-keyvault/install.ps1 -Prefix "sf$Random"
-  & ./iac-storage/install.ps1 -Prefix "sf$Random"
-  & ./iac-network/install.ps1 -Prefix "sf$Random"
+  & ./infrastructure/iac-keyvault/install.ps1 -Prefix "sf$Random"
+  & ./infrastructure/iac-storage/install.ps1 -Prefix "sf$Random"
+  & ./infrastructure/iac-network/install.ps1 -Prefix "sf$Random"
 
   Write-Host "---------------------------------------------" -ForegroundColor "blue"
   Write-Host "Base Components have been installed!!!!!" -ForegroundColor "red"
@@ -61,7 +60,7 @@ if ($Base -eq $true) {
 
 if ($Routing -eq "publicLB") {
   Write-Host "Install Routing Resources here we go...." -ForegroundColor "cyan"
-  & ./iac-publicLB/install.ps1 -Prefix "sf$Random"
+  & ./infrastructure/iac-publicLB/install.ps1 -Prefix "sf$Random"
 
   Write-Host "---------------------------------------------" -ForegroundColor "blue"
   Write-Host "Routing Components have been installed!!!!!" -ForegroundColor "red"
@@ -70,7 +69,7 @@ if ($Routing -eq "publicLB") {
 
 if ($Cluster -eq $true) {
   Write-Host "Install Cluster Resources here we go...." -ForegroundColor "cyan"
-  & ./iac-serviceFabric/install.ps1 -Prefix "sf$Random"
+  & ./infrastructure/iac-serviceFabric/install.ps1 -Prefix "sf$Random"
 
   Write-Host "---------------------------------------------" -ForegroundColor "blue"
   Write-Host "Cluster Components have been installed!!!!!" -ForegroundColor "red"

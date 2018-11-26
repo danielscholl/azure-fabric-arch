@@ -21,8 +21,8 @@ Param(
   [string] $UserPass = $env:AZURE_PASSWORD
 )
 
-if (Test-Path ..\scripts\functions.ps1) { . ..\scripts\functions.ps1 }
-if (Test-Path .\scripts\functions.ps1) { . .\scripts\functions.ps1 }
+if (Test-Path ..\functions.ps1) { . ..\functions.ps1 }
+if (Test-Path .\functions.ps1) { . .\functions.ps1 }
 if (!$Subscription) { throw "Subscription Required" }
 if (!$ResourceGroupName) { throw "Resource Group Required" }
 if (!$Location) { throw "Location Required" }

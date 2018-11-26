@@ -2,7 +2,7 @@
 .SYNOPSIS
   Infrastructure as Code Component
 .DESCRIPTION
-  Install a Network
+  Install a StorageAccount
 .EXAMPLE
   .\install.ps1
   Version History
@@ -16,15 +16,14 @@ Param(
   [string] $ResourceGroupName = "$env:AZURE_RANDOM-$env:AZURE_GROUP",
   [string] $Location = $env:AZURE_LOCATION,
   [string] $Prefix = $env:AZURE_GROUP,
-  [string ]$NetworkSegment = "10.0.0"
+  [string] $Suffix = ""
 )
 
-if (Test-Path ..\scripts\functions.ps1) { . ..\scripts\functions.ps1 }
-if (Test-Path .\scripts\functions.ps1) { . .\scripts\functions.ps1 }
+if (Test-Path ..\functions.ps1) { . ..\functions.ps1 }
+if (Test-Path .\functions.ps1) { . .\functions.ps1 }
 if ( !$Subscription) { throw "Subscription Required" }
 if ( !$ResourceGroupName) { throw "ResourceGroupName Required" }
 if ( !$Location) { throw "Location Required" }
-if ( !$NetworkSegment) { throw "Network Segment Required" }
 
 ###############################
 ## Azure Intialize           ##
@@ -35,8 +34,7 @@ LoginAzure
 CreateResourceGroup $ResourceGroupName $Location
 
 Write-Color -Text "Registering Provider..." -Color Yellow
-Register-AzureRmResourceProvider -ProviderNamespace Microsoft.Network
-
+Register-AzureRmResourceProvider -ProviderNamespace Microsoft.Storage
 
 ##############################
 ## Deploy Template          ##
@@ -44,13 +42,9 @@ Register-AzureRmResourceProvider -ProviderNamespace Microsoft.Network
 Write-Color -Text "`r`n---------------------------------------------------- "-Color Yellow
 Write-Color -Text "Deploying ", "$DEPLOYMENT-$Prefix ", "template..." -Color Green, Red, Green
 Write-Color -Text "---------------------------------------------------- "-Color Yellow
-
 New-AzureRmResourceGroupDeployment -Name $DEPLOYMENT-$Prefix `
   -TemplateFile $BASE_DIR\azuredeploy.json `
   -TemplateParameterFile $BASE_DIR\azuredeploy.parameters.json `
-  -prefix $Prefix `
-  -vnetPrefix    "$NetworkSegment.0/24" `
-  -subnet1Prefix "$NetworkSegment.0/26" `
-  -subnet2Prefix "$NetworkSegment.224/28" `
+  -prefix $Prefix -suffix $Suffix `
   -ResourceGroupName $ResourceGroupName `
   -Verbose

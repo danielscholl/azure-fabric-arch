@@ -2,7 +2,7 @@
 .SYNOPSIS
   Infrastructure as Code Component
 .DESCRIPTION
-  Install a StorageAccount
+  Install a Private Load Balancer
 .EXAMPLE
   .\install.ps1
   Version History
@@ -15,15 +15,14 @@ Param(
   [string] $Subscription = $env:AZURE_SUBSCRIPTION,
   [string] $ResourceGroupName = "$env:AZURE_RANDOM-$env:AZURE_GROUP",
   [string] $Location = $env:AZURE_LOCATION,
-  [string] $Prefix = $env:AZURE_GROUP,
-  [string] $Suffix = ""
+  [string] $Prefix = $env:AZURE_GROUP
 )
 
-if (Test-Path ..\scripts\functions.ps1) { . ..\scripts\functions.ps1 }
-if (Test-Path .\scripts\functions.ps1) { . .\scripts\functions.ps1 }
-if ( !$Subscription) { throw "Subscription Required" }
-if ( !$ResourceGroupName) { throw "ResourceGroupName Required" }
-if ( !$Location) { throw "Location Required" }
+if (Test-Path ..\functions.ps1) { . ..\functions.ps1 }
+if (Test-Path .\functions.ps1) { . .\functions.ps1 }
+if (!$Subscription) { throw "Subscription Required" }
+if (!$ResourceGroupName) { throw "ResourceGroupName Required" }
+if (!$Location) { throw "Location Required" }
 
 ###############################
 ## Azure Intialize           ##
@@ -34,17 +33,22 @@ LoginAzure
 CreateResourceGroup $ResourceGroupName $Location
 
 Write-Color -Text "Registering Provider..." -Color Yellow
-Register-AzureRmResourceProvider -ProviderNamespace Microsoft.Storage
+Register-AzureRmResourceProvider -ProviderNamespace Microsoft.Compute
 
 ##############################
 ## Deploy Template          ##
 ##############################
+Write-Color -Text "Retrieving Virtual Network Parameters..." -Color Green
+$VirtualNetworkName = "${ResourceGroupName}-vnet"
+Write-Color -Text "$ResourceGroupName  $VirtualNetworkName $Subnet" -Color White
+
+
 Write-Color -Text "`r`n---------------------------------------------------- "-Color Yellow
 Write-Color -Text "Deploying ", "$DEPLOYMENT-$Prefix ", "template..." -Color Green, Red, Green
 Write-Color -Text "---------------------------------------------------- "-Color Yellow
 New-AzureRmResourceGroupDeployment -Name $DEPLOYMENT-$Prefix `
   -TemplateFile $BASE_DIR\azuredeploy.json `
   -TemplateParameterFile $BASE_DIR\azuredeploy.parameters.json `
-  -prefix $Prefix -suffix $Suffix `
+  -prefix $Prefix `
   -ResourceGroupName $ResourceGroupName `
   -Verbose
