@@ -42,6 +42,8 @@ __Requirements:__
   AzureRM.Storage                       5.0.2
 ```
 
+4. [Open SSL](https://slproweb.com/products/Win32OpenSSL.html)
+
 __Installation:__
 
 Install Required PowerShell Modules if needed
