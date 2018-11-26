@@ -5,9 +5,9 @@
     <Parameter Name="SimpleApp.SfProd.WebSite_InstanceCount" DefaultValue="-1" />
     <Parameter Name="SimpleApp.SfProd.WebApi_ASPNETCORE_ENVIRONMENT" DefaultValue="" />
     <Parameter Name="SimpleApp.SfProd.WebApi_InstanceCount" DefaultValue="-1" />
-    <Parameter Name="SimpleApp.SfProd.CpuBurner_MinReplicaSetSize" DefaultValue="3" />
-    <Parameter Name="SimpleApp.SfProd.CpuBurner_PartitionCount" DefaultValue="1" />
-    <Parameter Name="SimpleApp.SfProd.CpuBurner_TargetReplicaSetSize" DefaultValue="3" />
+    <Parameter Name="SimpleApp.SfProd.CpuBurner_MinReplicaSetSize" DefaultValue="1" />
+    <Parameter Name="SimpleApp.SfProd.CpuBurner_PartitionCount" DefaultValue="10" />
+    <Parameter Name="SimpleApp.SfProd.CpuBurner_TargetReplicaSetSize" DefaultValue="1" />
   </Parameters>
   <!-- Import the ServiceManifest from the ServicePackage. The ServiceManifestName and ServiceManifestVersion 
        should match the Name and Version attributes of the ServiceManifest element defined in the 

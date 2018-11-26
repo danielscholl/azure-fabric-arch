@@ -1,8 +1,8 @@
 param(
   [Parameter(Mandatory = $true)] [string] $Environment,
   [string] $Location = $env:AZURE_LOCATION,
-  [string] $SfType = "SimpleApp.SfProdType",
-  [string] $Package = "SimpleApp"
+  [string] $Name = "SimpleApp.SfProd",
+  [string] $Package = "simpleapp"
 )
 $PkgPath = "$PSScriptRoot\pkgs\$Package"
 
@@ -20,10 +20,10 @@ Connect-ServiceFabricCluster `
   -StoreLocation CurrentUser -StoreName My
 
 
-Write-Color -Text "Unregistering ", $SfType, " if present..."   -Color "green", "red", "green"
-Unregister-ApplicationTypeCompletely $SfType
+Write-Color -Text "Unregistering ", $Name, " if present..."   -Color "green", "red", "green"
+Unregister-ApplicationTypeCompletely $Name
 
 Write-Color -Text "Deploying Application to the cluster..." -Color yellow
-Copy-ServiceFabricApplicationPackage -ApplicationPackagePath $PkgPath -ApplicationPackagePathInImageStore $SfType -TimeoutSec 1800 -ShowProgress
-Register-ServiceFabricApplicationType -ApplicationPathInImageStore $SfType
-New-ServiceFabricApplication -ApplicationName "fabric:/$SfType" -ApplicationTypeName $SfType -ApplicationTypeVersion "1.0.0"
+Copy-ServiceFabricApplicationPackage -ApplicationPackagePath $PkgPath -ApplicationPackagePathInImageStore $Name -TimeoutSec 1800 -ShowProgress
+Register-ServiceFabricApplicationType -ApplicationPathInImageStore $Name
+New-ServiceFabricApplication -ApplicationName "fabric:/$Name" -ApplicationTypeName $Name -ApplicationTypeVersion "1.0.0"
