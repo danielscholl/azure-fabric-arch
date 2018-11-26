@@ -76,9 +76,9 @@ The architecture depends upon the following items:
 
 ### Scale Set Requirements
 
-| Size            | vCPU | Memory (GiB) | Network Bandwidth MBps | Instances |
-| --------------- | ---- | ------------ | ---------------------- | --------- |
-| Standard_D2_v2  | 2    | 7            | 1500                   | 1         |
+| Size           | vCPU | Memory (GiB) | Network Bandwidth MBps | Instances |
+| -------------- | ---- | ------------ | ---------------------- | --------- |
+| Standard_D2_v2 | 2    | 7            | 1500                   | 1         |
 
 | OS Disk     | Disk Type    | Disk Throughput (IOPS/MBps) |
 | ----------- | ------------ | --------------------------- |
@@ -111,6 +111,7 @@ Default Environment Settings
 Resources are broken up into sections only for the purpose of not having an excessively long running task.
 
 #### Install Base Resources
+Environment dev (.env_dev.ps1) or prd (.env_prd.ps1)
 
 ```powershell
 # Install the Base Resources
@@ -128,4 +129,13 @@ Resources are broken up into sections only for the purpose of not having an exce
 ```powershell
 # Install the Cluster Resources
 ./install.ps1 -Cluster $true -Environment 'dev'
+```
+
+
+#### Install Package Application
+
+```powershell
+# Deploy the Application Package
+./deploy.ps1 -Environment dev -Name Voting
+./deploy.ps1 -Environment dev -Name SimpleApp.SfProd
 ```
