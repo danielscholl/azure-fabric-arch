@@ -17,7 +17,7 @@
 
 param(
   [boolean] $Base = $false,
-  [ValidateSet('none','publicLB')] [string] $Routing = "none",
+  [ValidateSet('publicLB', 'none')] [string] $Routing = "none",
   [boolean] $Cluster = $false,
   [Parameter(Mandatory = $true)] [string] $Environment,
 

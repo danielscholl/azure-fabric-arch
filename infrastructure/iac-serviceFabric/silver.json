@@ -104,6 +104,7 @@
     "vmImageVersion": "latest",
     "fabricTcpGatewayPort": "19000",
     "fabricHttpGatewayPort": "19080",
+    "reverseProxyEndpointPort": "19081",
     "applicationStartPort": "20000",
     "applicationEndPort": "30000",
     "ephemeralStartPort": "49152",
@@ -350,7 +351,8 @@
             },
             "httpGatewayEndpointPort": "[variables('fabricHttpGatewayPort')]",
             "isPrimary": true,
-            "vmInstanceCount": "[parameters('vmCount')]"
+            "vmInstanceCount": "[parameters('vmCount')]",
+            "reverseProxyEndpointPort": "[variables('reverseProxyEndpointPort')]"
           }
         ],
         "reliabilityLevel": "Silver",

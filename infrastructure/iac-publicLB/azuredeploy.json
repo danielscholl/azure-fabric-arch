@@ -15,7 +15,9 @@
     "LBName": "[concat(parameters('prefix'), '-lb')]",
     "LBId": "[resourceId('Microsoft.Network/loadBalancers', variables('LBName'))]",
     "fabricTcpGatewayPort": "19000",
-    "fabricHttpGatewayPort": "19080"
+    "fabricHttpGatewayPort": "19080",
+    "reverseProxyEndpointPort": "19081"
+
   },
   "resources": [
     {
@@ -87,6 +89,15 @@
             }
           },
           {
+            "name": "SFReverseProxyProbe",
+            "properties": {
+              "intervalInSeconds": 5,
+              "numberOfProbes": 2,
+              "port": "[variables('reverseProxyEndpointPort')]",
+              "protocol": "Tcp"
+            }
+          },
+          {
             "name": "AppProbe",
             "properties": {
               "intervalInSeconds": 5,
@@ -149,6 +160,25 @@
               "idleTimeoutInMinutes": 5,
               "probe": {
                 "id": "[concat(variables('LBId'), '/probes/FabricExplorerProbe')]"
+              },
+              "protocol": "Tcp"
+            }
+          },
+          {
+            "name": "LBSFReverseProxyRule",
+            "properties": {
+              "backendAddressPool": {
+                "id": "[concat(variables('LBId'), '/backendAddressPools/lbBackEnd')]"
+              },
+              "backendPort": "[variables('reverseProxyEndpointPort')]",
+              "enableFloatingIP": false,
+              "frontendIPConfiguration": {
+                "id": "[concat(variables('LBId'), '/frontendIpConfigurations/lbFrontEnd')]"
+              },
+              "frontendPort": "[variables('reverseProxyEndpointPort')]",
+              "idleTimeoutInMinutes": 5,
+              "probe": {
+                "id": "[concat(variables('lbId'),'/probes/SFReverseProxyProbe')]"
               },
               "protocol": "Tcp"
             }
