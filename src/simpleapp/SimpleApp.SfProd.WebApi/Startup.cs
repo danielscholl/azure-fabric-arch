@@ -1,14 +1,17 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using SimpleApp.SfProd.WebApi.Repositories;
+using Swashbuckle.AspNetCore.Swagger;
 
 namespace SimpleApp.SfProd.WebApi
 {
@@ -24,7 +27,21 @@ namespace SimpleApp.SfProd.WebApi
     // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services)
     {
+      services.AddScoped<PetsRepository>();
+
+      services.AddDbContext<AppContext>(opt => opt.UseInMemoryDatabase("simpleApp"));
+
       services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
+      services.AddSwaggerGen(c =>
+
+      {
+        c.SwaggerDoc("v1", new Info
+        {
+          Title = "Demo.API",
+          Version = "v1"
+        });
+      });
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -35,6 +52,15 @@ namespace SimpleApp.SfProd.WebApi
         app.UseDeveloperExceptionPage();
       }
 
+      app.UseSwagger(c =>
+      {
+        c.RouteTemplate = "api/docs/{documentName}/swagger.json";
+      });
+      app.UseSwaggerUI(c =>
+      {
+        c.SwaggerEndpoint("/api/docs/v1/swagger.json", "Pets v1");
+        c.RoutePrefix = "api";
+      });
       app.UseMvc();
     }
   }
