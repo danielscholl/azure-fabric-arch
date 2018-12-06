@@ -67,7 +67,7 @@
     },
     "vmSize": {
       "type": "string",
-      "defaultValue": "Standard_D2_V2"
+      "defaultValue": "Standard_D3_V2"
     },
     "storageAccount": {
       "type": "string",

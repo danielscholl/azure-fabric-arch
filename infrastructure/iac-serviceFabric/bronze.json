@@ -354,7 +354,7 @@
             "reverseProxyEndpointPort": "[variables('reverseProxyEndpointPort')]"
           }
         ],
-        "reliabilityLevel": "None",
+        "reliabilityLevel": "Bronze",
         "upgradeMode": "Automatic",
         "vmImage": "Windows"
       }
