@@ -1,0 +1,391 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "prefix": {
+      "type": "string",
+      "metadata": {
+        "description": "Small unique string."
+      }
+    },
+    "vnetName": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of the existing VNET"
+      }
+    },
+    "subnet": {
+      "type": "string",
+      "metadata": {
+        "description": "Subnet ID to associate VM to."
+      }
+    },
+    "lbName": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of the existing LB"
+      }
+    },
+    "vaultName": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of the existing Key Vault"
+      }
+    },
+    "certificateUrlValue": {
+      "type": "string",
+      "metadata": {
+        "description": "Refers to the location URL in your key vault where the cluster certificate was uploaded. The format is https://<name of the vault>.vault.azure.net:443/secrets/<exact location>"
+      }
+    },
+    "certificateThumbprint": {
+      "type": "string",
+      "metadata": {
+        "description": "The thumbprint of the the certificate that was uploaded"
+      }
+    },
+    "adminUserName": {
+      "defaultValue": "azureuser",
+      "type": "string",
+      "metadata": {
+        "description": "User name for the Virtual Machines."
+      }
+    },
+    "adminPassword": {
+      "defaultValue": "azureuser",
+      "type": "string",
+      "metadata": {
+        "description": "Password for the Virtual Machines."
+      }
+    },
+    "vmCount": {
+      "type": "int",
+      "defaultValue": 5,
+      "metadata": {
+        "description": "Instance count for node type"
+      }
+    },
+    "vmSize": {
+      "type": "string",
+      "defaultValue": "Standard_D3_V2"
+    },
+    "storageAccount": {
+      "type": "string",
+      "metadata": {
+        "description": "Storage Account Name for Diagnostics and Logs."
+      }
+    },
+    "omsWorkspaceId": {
+      "type": "string",
+      "metadata": {
+        "description": "Analytics Workspace Id."
+      }
+    },
+    "omsWorkspaceKey": {
+      "type": "string",
+      "metadata": {
+        "description": "Analytics Workspace Key."
+      }
+    },
+    "tenantId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "AD Tenanat Id"
+      }
+    },
+    "clusterApplicationId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "SF RBAC Cluster App Id"
+      }
+    },
+    "clientApplicationId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "SF RBAC Client App Id"
+      }
+    }
+  },
+  "variables": {
+    "vnetId": "[resourceId(resourceGroup().name, 'Microsoft.Network/virtualNetworks', parameters('vnetName'))]",
+    "subnetId": "[concat(variables('vnetId'),'/subnets/', parameters('subnet'))]",
+    "lbId": "[resourceId(resourceGroup().name, 'Microsoft.Network/loadBalancers', parameters('lbName'))]",
+    "vaultId": "[resourceId(resourceGroup().name, 'Microsoft.KeyVault/vaults', parameters('vaultName'))]",
+    "storageId": "[resourceId(resourceGroup().name, 'Microsoft.Storage/storageAccounts', parameters('storageAccount'))]",
+    "clusterName": "[concat(parameters('prefix'), '-cluster')]",
+    "vmNodeType0Name": "[concat(parameters('prefix'), '-vmss')]",
+    "vmName": "vm",
+    "certificateStoreValue": "My",
+    "vmImagePublisher": "MicrosoftWindowsServer",
+    "vmImageOffer": "WindowsServer",
+    "vmImageSku": "2016-Datacenter-with-Containers",
+    "vmImageVersion": "latest",
+    "fabricTcpGatewayPort": "19000",
+    "fabricHttpGatewayPort": "19080",
+    "reverseProxyEndpointPort": "19081",
+    "applicationStartPort": "20000",
+    "applicationEndPort": "30000",
+    "ephemeralStartPort": "49152",
+    "ephemeralEndPort": "65534"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Compute/virtualMachineScaleSets",
+      "apiVersion": "2018-10-01",
+      "name": "[variables('vmNodeType0Name')]",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [],
+      "tags": {
+        "resourceType": "Service Fabric",
+        "clusterName": "[variables('clusterName')]",
+        "displayName": "Cluster scale set"
+      },
+      "properties": {
+        "overprovision": false,
+        "upgradePolicy": {
+          "mode": "Automatic"
+        },
+        "virtualMachineProfile": {
+          "networkProfile": {
+            "networkInterfaceConfigurations": [
+              {
+                "name": "NIC-0",
+                "properties": {
+                  "ipConfigurations": [
+                    {
+                      "name": "NIC-0-config",
+                      "properties": {
+                        "loadBalancerBackendAddressPools": [
+                          {
+                            "id": "[concat(variables('LbId'), '/backendAddressPools/lbBackEnd')]"
+                          }
+                        ],
+                        "loadBalancerInboundNatPools": [
+                          {
+                            "id": "[concat(variables('LbId'), '/inboundNatPools/LoadBalancerBEAddressNatPool')]"
+                          }
+                        ],
+                        "subnet": {
+                          "id": "[variables('subnetId')]"
+                        }
+                      }
+                    }
+                  ],
+                  "primary": true
+                }
+              }
+            ]
+          },
+          "osProfile": {
+            "adminUsername": "[parameters('adminUsername')]",
+            "adminPassword": "[parameters('adminPassword')]",
+            "computerNamePrefix": "[variables('vmName')]",
+            "secrets": [
+              {
+                "sourceVault": {
+                  "id": "[variables('vaultId')]"
+                },
+                "vaultCertificates": [
+                  {
+                    "certificateStore": "[variables('certificateStoreValue')]",
+                    "certificateUrl": "[parameters('certificateUrlValue')]"
+                  }
+                ]
+              }
+            ]
+          },
+          "storageProfile": {
+            "imageReference": {
+              "publisher": "[variables('vmImagePublisher')]",
+              "offer": "[variables('vmImageOffer')]",
+              "sku": "[variables('vmImageSku')]",
+              "version": "[variables('vmImageVersion')]"
+            },
+            "osDisk": {
+              "caching": "ReadWrite",
+              "createOption": "FromImage",
+              "managedDisk": {
+                "storageAccountType": "Standard_LRS"
+              }
+            }
+          },
+          "extensionProfile": {
+            "extensions": [
+              {
+                "name": "[concat('VMDiagnosticsVmExt', '_', variables('vmNodeType0Name'))]",
+                "properties": {
+                  "type": "IaaSDiagnostics",
+                  "autoUpgradeMinorVersion": true,
+                  "protectedSettings": {
+                    "storageAccountName": "[parameters('storageAccount')]",
+                    "storageAccountKey": "[listkeys(variables('storageId'), '2016-01-01').keys[0].value]"
+                  },
+                  "publisher": "Microsoft.Azure.Diagnostics",
+                  "settings": {
+                    "WadCfg": {
+                      "DiagnosticMonitorConfiguration": {
+                        "overallQuotaInMB": "50000",
+                        "sinks": "applicationInsights",
+                        "EtwProviders": {
+                          "EtwEventSourceProviderConfiguration": [
+                            {
+                              "provider": "Microsoft-ServiceFabric-Actors",
+                              "scheduledTransferKeywordFilter": "1",
+                              "scheduledTransferPeriod": "PT5M",
+                              "DefaultEvents": {
+                                "eventDestination": "ServiceFabricReliableActorEventTable"
+                              }
+                            },
+                            {
+                              "provider": "Microsoft-ServiceFabric-Services",
+                              "scheduledTransferPeriod": "PT5M",
+                              "DefaultEvents": {
+                                "eventDestination": "ServiceFabricReliableServiceEventTable"
+                              }
+                            }
+                          ],
+                          "EtwManifestProviderConfiguration": [
+                            {
+                              "provider": "cbd93bc2-71e5-4566-b3a7-595d8eeca6e8",
+                              "scheduledTransferLogLevelFilter": "Information",
+                              "scheduledTransferKeywordFilter": "4611686018427387904",
+                              "scheduledTransferPeriod": "PT5M",
+                              "DefaultEvents": {
+                                "eventDestination": "ServiceFabricSystemEventTable"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  },
+                  "typeHandlerVersion": "1.5"
+                }
+              },
+              {
+                "name": "[concat('ServiceFabricNodeVmExt', '_', variables('vmNodeType0Name'))]",
+                "properties": {
+                  "type": "ServiceFabricNode",
+                  "autoUpgradeMinorVersion": true,
+                  "protectedSettings": {
+                    "StorageAccountKey1": "[listKeys(variables('storageId'),'2016-01-01').keys[0].value]",
+                    "StorageAccountKey2": "[listKeys(variables('storageId'),'2016-01-01').keys[1].value]"
+                  },
+                  "publisher": "Microsoft.Azure.ServiceFabric",
+                  "settings": {
+                    "clusterEndpoint": "[reference(variables('clusterName')).clusterEndpoint]",
+                    "nodeTypeRef": "[variables('vmNodeType0Name')]",
+                    "enableParallelJobs": true,
+                    "dataPath": "D:\\\\SvcFab",
+                    "durabilityLevel": "Silver",
+                    "certificate": {
+                      "thumbprint": "[parameters('certificateThumbprint')]",
+                      "x509StoreName": "[variables('certificateStoreValue')]"
+                    }
+                  },
+                  "typeHandlerVersion": "1.0"
+                }
+              },
+              {
+                "name": "[concat('OMSVmExt', '_', variables('vmNodeType0Name'))]",
+                "properties": {
+                  "publisher": "Microsoft.EnterpriseCloud.Monitoring",
+                  "type": "MicrosoftMonitoringAgent",
+                  "typeHandlerVersion": "1.0",
+                  "autoUpgradeMinorVersion": true,
+                  "settings": {
+                    "workspaceId": "[parameters('omsWorkspaceId')]"
+                  },
+                  "protectedSettings": {
+                    "workspaceKey": "[parameters('omsWorkspaceKey')]"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      },
+      "sku": {
+        "name": "[parameters('vmSize')]",
+        "capacity": "[parameters('vmCount')]",
+        "tier": "Standard"
+      }
+    },
+    {
+      "apiVersion": "2018-02-01",
+      "type": "Microsoft.ServiceFabric/clusters",
+      "name": "[variables('clusterName')]",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [],
+      "tags": {
+        "resourceType": "Service Fabric",
+        "clusterName": "[variables('clusterName')]",
+        "displayName": "Cluster"
+      },
+      "properties": {
+        "certificate": {
+          "thumbprint": "[parameters('certificateThumbprint')]",
+          "x509StoreName": "[variables('certificateStoreValue')]"
+        },
+        "clientCertificateCommonNames": [],
+        "clientCertificateThumbprints": [],
+        "clusterState": "Default",
+        "provisioningState": "Default",
+        "diagnosticsStorageAccountConfig": {
+          "blobEndpoint": "[reference(variables('storageId'), '2016-01-01').primaryEndpoints.blob]",
+          "protectedAccountKeyName": "StorageAccountKey1",
+          "queueEndpoint": "[reference(variables('storageId'), '2016-01-01').primaryEndpoints.queue]",
+          "storageAccountName": "[parameters('storageAccount')]",
+          "tableEndpoint": "[reference(variables('storageId'), '2016-01-01').primaryEndpoints.table]"
+        },
+        "fabricSettings": [
+          {
+            "parameters": [
+              {
+                "name": "ClusterProtectionLevel",
+                "value": "EncryptAndSign"
+              }
+            ],
+            "name": "Security"
+          }
+        ],
+        "addonFeatures": [
+          "RepairManager",
+          "DnsService"
+        ],
+        "managementEndpoint": "[concat('https://', parameters('prefix'), '.', resourceGroup().location, '.cloudapp.azure.com', ':', variables('fabricHttpGatewayPort'))]",
+        "nodeTypes": [
+          {
+            "name": "[variables('vmNodeType0Name')]",
+            "applicationPorts": {
+              "endPort": "[variables('applicationEndPort')]",
+              "startPort": "[variables('applicationStartPort')]"
+            },
+            "clientConnectionEndpointPort": "[variables('fabricTcpGatewayPort')]",
+            "durabilityLevel": "Silver",
+            "ephemeralPorts": {
+              "endPort": "[variables('ephemeralEndPort')]",
+              "startPort": "[variables('ephemeralStartPort')]"
+            },
+            "httpGatewayEndpointPort": "[variables('fabricHttpGatewayPort')]",
+            "isPrimary": true,
+            "vmInstanceCount": "[parameters('vmCount')]",
+            "reverseProxyEndpointPort": "[variables('reverseProxyEndpointPort')]"
+          }
+        ],
+        "reliabilityLevel": "Silver",
+        "upgradeMode": "Automatic",
+        "vmImage": "Windows",
+        "azureActiveDirectory": {
+          "tenantId":"[parameters('tenantId')]",
+          "clusterApplication":"[parameters('clusterApplicationId')]",
+          "clientApplication":"[parameters('clientApplicationId')]"
+        }
+      }
+    }
+  ],
+  "outputs": {}
+}
