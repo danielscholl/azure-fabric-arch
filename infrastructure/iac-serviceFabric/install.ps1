@@ -19,8 +19,11 @@ Param(
   [string] $Analytics = $env:AZURE_ANALYTICS,
   [string] $AnalyticsKey = $env:AZURE_ANALYTICS_KEY,
   [ValidateSet('bronze','silver')]
-  [String] $Level = $env:FABRIC_TIER,
-  [int] $Instance = $env:FABRIC_NODE_COUNT
+  [string] $Level = $env:FABRIC_TIER,
+  [int] $Instance = $env:FABRIC_NODE_COUNT,
+  [string] $Tenant = $env:AZURE_TENANT,
+  [string] $ClusterAppId = $env:CLUSTER_APP,
+  [string] $ClientAppId = $env:CLIENT_APP
 )
 
 if (Test-Path ..\functions.ps1) { . ..\functions.ps1 }
@@ -71,6 +74,8 @@ Write-Color -Text "$AdminUserName\*************" -Color White
 Write-Color -Text "`r`n---------------------------------------------------- "-Color Yellow
 Write-Color -Text "Deploying ", "$DEPLOYMENT-$Prefix ", "template..." -Color Green, Red, Green
 Write-Color -Text "---------------------------------------------------- "-Color Yellow
+
+
 New-AzureRmResourceGroupDeployment -Name $DEPLOYMENT-$Prefix `
   -TemplateFile $BASE_DIR\$LEVEL.json `
   -TemplateParameterFile $BASE_DIR\azuredeploy.parameters.json `
@@ -80,5 +85,6 @@ New-AzureRmResourceGroupDeployment -Name $DEPLOYMENT-$Prefix `
   -adminUserName $AdminUserName -adminPassword $AdminPassword `
   -storageAccount $StorageAccountName -vmCount $Instance `
   -omsWorkspaceId $Analytics -omsWorkspaceKey $AnalyticsKey `
+  -tenantId $Tenant -clusterApplicationId $ClusterAppId -clientApplicationId $ClientAppId `
   -ResourceGroupName $ResourceGroupName `
   -Verbose

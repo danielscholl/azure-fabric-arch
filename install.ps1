@@ -17,8 +17,9 @@
 
 param(
   [boolean] $Base = $false,
-  [ValidateSet('publicLB', 'none')] [string] $Routing = "none",
+  [boolean] $RBAC = $false,
   [boolean] $Cluster = $false,
+  [ValidateSet('publicLB', 'none')] [string] $Routing = "none",
   [Parameter(Mandatory = $true)] [string] $Environment,
 
   [string] $ResourceGroupName = "$env:AZURE_RANDOM-$env:AZURE_GROUP",
@@ -79,4 +80,21 @@ if ($Cluster -eq $true) {
 
   $env:Endpoint = "sf$Random.eastus2.cloudapp.azure.com:19000"
   Write-Color -Text "Endpoint = ", $env:Endpoint -Color green, red
+}
+
+if ($RBAC -eq $true) {
+  $tenantId = (Get-AzureRmContext).Tenant.Id
+  $replyUrl = "https://sf$Random.$Location.cloudapp.azure.com:19080/Explorer/index.html"
+  $clusterName = "sf$Random"
+
+  Write-Host "Enabling Active Directory RBAC here we go...." -ForegroundColor "cyan"
+  Write-Color "  tenant: ", $tenantId -Color yellow, blue
+  Write-Color "  replyUrl: ", $replyUrl -Color yellow, blue
+  Write-Color "  cluster: ", $clusterName -Color yellow, blue
+
+  & ./infrastructure/aadtool/SetupApplications.ps1 -TenantId $tenantId -ClusterName $clusterName -WebApplicationReplyUrl $replyUrl
+
+  Write-Host "---------------------------------------------" -ForegroundColor "blue"
+  Write-Host "Active Directory RBAC has been installed!!!!!" -ForegroundColor "red"
+  Write-Host "---------------------------------------------" -ForegroundColor "blue"
 }

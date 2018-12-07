@@ -15,3 +15,8 @@ $Env:AZURE_GROUP = "fabric"                                       # Group Name
 $Env:AZURE_RANDOM = "999"                                         # Unique 3 Digit Identifier
 $Env:FABRIC_TIER = "bronze"                                       # Durability Level
 $Env:FABRIC_NODE_COUNT = 1                                        # Instance Count
+
+$Env:Endpoint = "<your_sf_endpoint>"                              # Service Fabric FQDN and Port
+$Env:ThumbPrint = "<your_x509_thumbprint>"                        # x509 Certificate Thumbnail
+$Env:CLUSTER_APP = "<ad_app_cluster>"                             # Web Appliation
+$Env:CLIENT_APP = "<ad_app_client>"                               # Native Client Application

@@ -134,6 +134,17 @@ Environment dev (.env_dev.ps1) or prd (.env_prd.ps1)
 ./install.ps1 -Cluster $true -Environment 'dev'
 ```
 
+#### Enable Active Directory RBAC Integration
+
+```powershell
+# Install the Cluster Resources
+./install.ps1 -RBAC $true -Environment 'dev'
+
+# Add the Response into the .env file.
+$Env:CLUSTER_APP = "<your_web_application>"
+$Env:CLIENT_APP = "<your_native_client_app>"
+
+```
 
 #### Install Package Application
 
