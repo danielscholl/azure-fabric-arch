@@ -9,5 +9,5 @@ For Germany BlackForest:
 $Configobj = .\SetupApplications.ps1 -TenantId '80cd59e7-5f48-4325-8769-a47bc72de2d3' -ClusterName 'DemoLocalCluster' -WebApplicationReplyUrl 'https://localhost:19007/Explorer/index.html' -Location germany
 
 
-
-.\SetupApplications.ps1 -TenantId '690ec069-8200-4068-9d01-5aaf188e557a' -ClusterName 'sf123-cluster' -WebApplicationReplyUrl 'https://sf123.eastus2.cloudapp.azure.com:19080/Explorer/index.html' -AddResourceAccess
+For CCIT:
+$Configobj = .\SetupApplications.ps1 -TenantId '5cc80b30-6dfd-4dc3-bbce-aca1faf46c4d' -ClusterName 'sf123-cluster' -WebApplicationReplyUrl 'https://sf123.eastus2.cloudapp.azure.com:19080/Explorer/index.html' -AddResourceAccess

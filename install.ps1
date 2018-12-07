@@ -41,6 +41,8 @@ $Env:AZURE_ANALYTICS = [string]::Empty
 $Env:AZURE_ANALYTICS_KEY = [string]::Empty
 $Env:FABRIC_TIER = [string]::Empty
 $Env:FABRIC_NODE_COUNT = 0
+$Env:CLUSTER_APP = [string]::Empty
+$Env:CLIENT_APP = [string]::Empty
 
 # Load Project Environment Settings and Functions
 if (Test-Path "$PSScriptRoot\.env_$Environment.ps1") { . "$PSScriptRoot\.env_$Environment.ps1" }

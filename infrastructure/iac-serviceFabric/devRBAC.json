@@ -86,6 +86,27 @@
       "metadata": {
         "description": "Analytics Workspace Key."
       }
+    },
+    "tenantId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "AD Tenanat Id"
+      }
+    },
+    "clusterApplicationId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "SF RBAC Cluster App Id"
+      }
+    },
+    "clientApplicationId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "SF RBAC Client App Id"
+      }
     }
   },
   "variables": {
@@ -356,7 +377,12 @@
         ],
         "reliabilityLevel": "None",
         "upgradeMode": "Automatic",
-        "vmImage": "Windows"
+        "vmImage": "Windows",
+        "azureActiveDirectory": {
+          "tenantId":"[parameters('tenantId')]",
+          "clusterApplication":"[parameters('clusterApplicationId')]",
+          "clientApplication":"[parameters('clientApplicationId')]"
+        }
       }
     }
   ],
