@@ -137,6 +137,7 @@ Environment dev (.env_dev.ps1) or prd (.env_prd.ps1)
 $Env:CLUSTER_APP = "<your_web_application>"
 $Env:CLIENT_APP = "<your_native_client_app>"
 ```
+> Note: You have to add the desired Users after the cluster is created to the Cluster Application and give them the authorized role.
 
 #### Install Cluster Resources
 
@@ -145,10 +146,15 @@ $Env:CLIENT_APP = "<your_native_client_app>"
 ./install.ps1 -Cluster $true -Environment 'dev'
 ```
 
+
 #### Install Package Application
 
 ```powershell
-# Deploy the Application Package
-./deploy.ps1 -Environment dev -Name Voting
+# Deploy the Ingress Controller  (UI on Port 8080)
+./deploy.ps1 -Environment 'dev' -Name Traefik
+
+# Deploy the Desired Application Package  (UI on Port 80)
 ./deploy.ps1 -Environment dev -Name SimpleApp.SfProd
+./deploy.ps1 -Environment dev -Name Voting
+
 ```
