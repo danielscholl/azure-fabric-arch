@@ -146,7 +146,6 @@ $Env:CLIENT_APP = "<your_native_client_app>"
 ./install.ps1 -Cluster $true -Environment 'dev'
 ```
 
-
 #### Install Package Application
 
 ```powershell
