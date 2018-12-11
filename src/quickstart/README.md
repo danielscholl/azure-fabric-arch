@@ -4,7 +4,6 @@ platforms: dotnet
 author: mikkelhegn
 ---
 
-
 # Service Fabric .NET Quickstart
 This repository contains an quickstart project for [Microsoft Azure Service Fabric](https://azure.microsoft.com/services/service-fabric/). The quickstart project contains a single application with multiple services demonstrating the basic concepts of service communication and use of reliable dictionaries.
 
