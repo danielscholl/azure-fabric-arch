@@ -1,0 +1,71 @@
+resources:
+- repo: self
+
+queue:
+  name: Hosted VS2017
+  demands:
+  - msbuild
+  - visualstudio
+  - Cmd
+
+variables:
+  BuildPlatform: 'x64'
+  BuildConfiguration: 'release'
+  SourceDirectory: 'src/quickstart'
+
+steps:
+- task: NuGetToolInstaller@0
+  displayName: 'Use NuGet 4.9.1'
+  inputs:
+    versionSpec: 4.9.1
+
+- task: NuGetCommand@2
+  displayName: 'NuGet restore'
+  inputs:
+    restoreSolution: '$(SourceDirectory)\**\*.sln'
+
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet restore'
+  inputs:
+    command: restore
+    projects: '$(SourceDirectory)\**\*.sln'
+
+- task: VSBuild@1
+  displayName: 'Build Solution'
+  inputs:
+    solution: '$(Source)\**\*.sln'
+    msbuildArgs: '/p:Deterministic=true /p:PathMap="$(Agent.BuildDirectory)"=C:\'
+    platform: '$(BuildPlatform)'
+    configuration: '$(BuildConfiguration)'
+
+- task: VSBuild@1
+  displayName: 'Build ServiceFabric Project'
+  inputs:
+    solution: '$(SourceDirectory)\**\*.sfproj'
+    msbuildArgs: '/t:Package /p:PackageLocation="$(build.artifactstagingdirectory)\pkgs"'
+    platform: '$(BuildPlatform)'
+    configuration: '$(BuildConfiguration)'
+
+- task: CopyFiles@2
+  displayName: 'Copy PDB Files out of Package'
+  inputs:
+    SourceFolder: '$(build.artifactstagingdirectory)\pkgs'
+    Contents: '**\*.pdb'
+    TargetFolder: '$(build.artifactstagingdirectory)\pdbs'
+
+- task: DeleteFiles@1
+  displayName: 'Delete PDB Files from Package'
+  inputs:
+    SourceFolder: '$(build.artifactstagingdirectory)\pkgs'
+    Contents: '**\*.pdb'
+
+- task: ServiceFabricUpdateManifests@2
+  displayName: 'Update Service Fabric Manifests (Manifest versions)'
+  inputs:
+    applicationPackagePath: '$(build.artifactstagingdirectory)\pkgs'
+    versionSuffix: '.$(build.buildnumber)'
+    updateOnlyChanged: true
+    pkgArtifactName: drop
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact: drop'
