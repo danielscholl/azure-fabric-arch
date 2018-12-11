@@ -1,0 +1,374 @@
+{
+  "source": 2,
+  "revision": 42,
+  "description": null,
+  "variables": {
+    "networkSegment": {
+      "value": "10.0.0"
+    }
+  },
+  "variableGroups": [],
+  "environments": [
+    {
+      "id": 2,
+      "name": "Test",
+      "rank": 1,
+      "variables": {
+        "environment": {
+          "value": "test",
+          "allowOverride": true
+        },
+        "vaultName": {
+          "value": "sf123bh5wt6a5hsdpe",
+          "allowOverride": true
+        }
+      },
+      "variableGroups": [
+        4
+      ],
+      "preDeployApprovals": {
+        "approvals": [
+          {
+            "rank": 1,
+            "isAutomated": true,
+            "isNotificationOn": false,
+            "id": 4
+          }
+        ],
+        "approvalOptions": {
+          "requiredApproverCount": null,
+          "releaseCreatorCanBeApprover": false,
+          "autoTriggeredAndPreviousEnvironmentApprovedCanBeSkipped": false,
+          "enforceIdentityRevalidation": false,
+          "timeoutInMinutes": 0,
+          "executionOrder": 1
+        }
+      },
+      "deployStep": {
+        "id": 5
+      },
+      "postDeployApprovals": {
+        "approvals": [
+          {
+            "rank": 1,
+            "isAutomated": true,
+            "isNotificationOn": false,
+            "id": 6
+          }
+        ],
+        "approvalOptions": {
+          "requiredApproverCount": null,
+          "releaseCreatorCanBeApprover": false,
+          "autoTriggeredAndPreviousEnvironmentApprovedCanBeSkipped": false,
+          "enforceIdentityRevalidation": false,
+          "timeoutInMinutes": 0,
+          "executionOrder": 2
+        }
+      },
+      "deployPhases": [
+        {
+          "deploymentInput": {
+            "parallelExecution": {
+              "parallelExecutionType": 0
+            },
+            "skipArtifactsDownload": false,
+            "artifactsDownloadInput": {
+              "downloadInputs": []
+            },
+            "queueId": 14,
+            "demands": [],
+            "enableAccessToken": false,
+            "timeoutInMinutes": 0,
+            "jobCancelTimeoutInMinutes": 1,
+            "condition": "succeeded()",
+            "overrideInputs": {}
+          },
+          "rank": 1,
+          "phaseType": 1,
+          "name": "Agent job",
+          "refName": null,
+          "workflowTasks": [
+            {
+              "environment": {},
+              "version": "2.*",
+              "name": "Azure Deployment: Storage",
+              "refName": "",
+              "enabled": true,
+              "alwaysRun": false,
+              "continueOnError": false,
+              "timeoutInMinutes": 0,
+              "definitionType": "task",
+              "overrideInputs": {},
+              "condition": "succeeded()",
+              "inputs": {
+                "ConnectedServiceName": "81b4ea84-dbec-4acf-9207-eb96c9915586",
+                "action": "Create Or Update Resource Group",
+                "resourceGroupName": "$(azureRandom)-$(azureGroup)-$(environment)",
+                "location": "$(azureLocation)",
+                "templateLocation": "Linked artifact",
+                "csmFileLink": "",
+                "csmParametersFileLink": "",
+                "csmFile": "$(System.DefaultWorkingDirectory)/_azure-fabric-arch-iac/drop/iac-storage/azuredeploy.json",
+                "csmParametersFile": "",
+                "overrideParameters": "-prefix $(azureGroup) -suffix \"\"",
+                "deploymentMode": "Incremental",
+                "enableDeploymentPrerequisites": "None",
+                "deploymentGroupEndpoint": "",
+                "project": "",
+                "deploymentGroupName": "",
+                "copyAzureVMTags": "true",
+                "runAgentServiceAsUser": "false",
+                "userName": "",
+                "password": "",
+                "outputVariable": "",
+                "deploymentOutputs": "iac-storage"
+              }
+            },
+            {
+              "environment": {},
+              "version": "2.*",
+              "name": "Parse Azure Deployment Output: Storage",
+              "refName": "",
+              "enabled": true,
+              "alwaysRun": false,
+              "continueOnError": false,
+              "timeoutInMinutes": 0,
+              "definitionType": "task",
+              "overrideInputs": {},
+              "condition": "succeeded()",
+              "inputs": {
+                "targetType": "inline",
+                "filePath": "",
+                "arguments": "",
+                "script": "$json =  '$(iac-storage)' | convertfrom-json\n\n$storageId = $json.storageAccount.value.id\n$storageName = $json.storageAccount.value.name\n$storageKey = $json.storageAccount.value.key\n\nWrite-Host \"##vso[task.setvariable variable=armStorageId;]$storageId\"\nWrite-Host \"##vso[task.setvariable variable=armStorageName;]$storageName\"\nWrite-Host \"##vso[task.setvariable variable=armStorageKey;]$storageKey\"\n",
+                "errorActionPreference": "stop",
+                "failOnStderr": "false",
+                "ignoreLASTEXITCODE": "false",
+                "pwsh": "false",
+                "workingDirectory": ""
+              }
+            },
+            {
+              "environment": {},
+              "version": "2.*",
+              "name": "Azure Deployment: Network",
+              "refName": "",
+              "enabled": true,
+              "alwaysRun": false,
+              "continueOnError": false,
+              "timeoutInMinutes": 0,
+              "definitionType": "task",
+              "overrideInputs": {},
+              "condition": "succeeded()",
+              "inputs": {
+                "ConnectedServiceName": "81b4ea84-dbec-4acf-9207-eb96c9915586",
+                "action": "Create Or Update Resource Group",
+                "resourceGroupName": "$(azureRandom)-$(azureGroup)-$(environment)",
+                "location": "$(azureLocation)",
+                "templateLocation": "Linked artifact",
+                "csmFileLink": "",
+                "csmParametersFileLink": "",
+                "csmFile": "$(System.DefaultWorkingDirectory)/_azure-fabric-arch-iac/drop/iac-network/azuredeploy.json",
+                "csmParametersFile": "",
+                "overrideParameters": "-prefix $(azureGroup)  -vnetPrefix \"$(networkSegment).0/24\" -subnet1Prefix \"$(networkSegment).0/25\" -subnet2Prefix \"$(networkSegment).224/28\" -remoteAccessACL \"Internet\"",
+                "deploymentMode": "Incremental",
+                "enableDeploymentPrerequisites": "None",
+                "deploymentGroupEndpoint": "",
+                "project": "",
+                "deploymentGroupName": "",
+                "copyAzureVMTags": "true",
+                "runAgentServiceAsUser": "false",
+                "userName": "",
+                "password": "",
+                "outputVariable": "",
+                "deploymentOutputs": "iac-network"
+              }
+            },
+            {
+              "environment": {},
+              "version": "2.*",
+              "name": "Parse Azure Deployment Output: Network",
+              "refName": "",
+              "enabled": true,
+              "alwaysRun": false,
+              "continueOnError": false,
+              "timeoutInMinutes": 0,
+              "definitionType": "task",
+              "overrideInputs": {},
+              "condition": "succeeded()",
+              "inputs": {
+                "targetType": "inline",
+                "filePath": "",
+                "arguments": "",
+                "script": "$json =  '$(iac-network)' | convertfrom-json\n\n$vnetId= $json.virtualNetwork.value.id\n$vnetName= $json.virtualNetwork.value.name\n$subnetId1= $json.subnets.value.subnet1Id\n$subnetId2= $json.subnets.value.subnet2Id\n\nWrite-Host \"##vso[task.setvariable variable=armVnetId;]$vnetId\"\nWrite-Host \"##vso[task.setvariable variable=armVnetName;]$vnetName\"\nWrite-Host \"##vso[task.setvariable variable=armSubnetId1;]$subnetId1\"\nWrite-Host \"##vso[task.setvariable variable=armSubnetId2;]$subnetId2\"\n",
+                "errorActionPreference": "stop",
+                "failOnStderr": "false",
+                "ignoreLASTEXITCODE": "false",
+                "pwsh": "false",
+                "workingDirectory": ""
+              }
+            },
+            {
+              "environment": {},
+              "version": "2.*",
+              "name": "Azure Deployment: PublicLB",
+              "refName": "",
+              "enabled": true,
+              "alwaysRun": false,
+              "continueOnError": false,
+              "timeoutInMinutes": 0,
+              "definitionType": "task",
+              "overrideInputs": {},
+              "condition": "succeeded()",
+              "inputs": {
+                "ConnectedServiceName": "81b4ea84-dbec-4acf-9207-eb96c9915586",
+                "action": "Create Or Update Resource Group",
+                "resourceGroupName": "$(azureRandom)-$(azureGroup)-$(environment)",
+                "location": "$(azureLocation)",
+                "templateLocation": "Linked artifact",
+                "csmFileLink": "",
+                "csmParametersFileLink": "",
+                "csmFile": "$(System.DefaultWorkingDirectory)/_azure-fabric-arch-iac/drop/iac-publicLB/azuredeploy.json",
+                "csmParametersFile": "",
+                "overrideParameters": "-prefix $(azureGroup) ",
+                "deploymentMode": "Incremental",
+                "enableDeploymentPrerequisites": "None",
+                "deploymentGroupEndpoint": "",
+                "project": "",
+                "deploymentGroupName": "",
+                "copyAzureVMTags": "true",
+                "runAgentServiceAsUser": "false",
+                "userName": "",
+                "password": "",
+                "outputVariable": "",
+                "deploymentOutputs": "iac-publicLB"
+              }
+            },
+            {
+              "environment": {},
+              "version": "2.*",
+              "name": "Parse Azure Deployment Output: PublicLB",
+              "refName": "",
+              "enabled": true,
+              "alwaysRun": false,
+              "continueOnError": false,
+              "timeoutInMinutes": 0,
+              "definitionType": "task",
+              "overrideInputs": {},
+              "condition": "succeeded()",
+              "inputs": {
+                "targetType": "inline",
+                "filePath": "",
+                "arguments": "",
+                "script": "$json =  '$(iac-publicLB)' | convertfrom-json\n\n$lbId= $json.loadBalancer.value.id\n$lbName= $json.loadBalancer.value.name\n$lbIp= $json.loadBalancer.value.ip\n\nWrite-Host \"##vso[task.setvariable variable=armLbId;]$lbId\"\nWrite-Host \"##vso[task.setvariable variable=armLbName;]$lbName\"\nWrite-Host \"##vso[task.setvariable variable=armLbIp;]$lbIp\"\n",
+                "errorActionPreference": "stop",
+                "failOnStderr": "false",
+                "ignoreLASTEXITCODE": "false",
+                "pwsh": "false",
+                "workingDirectory": ""
+              }
+            },
+            {
+              "environment": {},
+              "version": "2.*",
+              "name": "Azure Deployment: Cluster",
+              "refName": "",
+              "enabled": true,
+              "alwaysRun": false,
+              "continueOnError": false,
+              "timeoutInMinutes": 0,
+              "definitionType": "task",
+              "overrideInputs": {},
+              "condition": "succeeded()",
+              "inputs": {
+                "ConnectedServiceName": "81b4ea84-dbec-4acf-9207-eb96c9915586",
+                "action": "Create Or Update Resource Group",
+                "resourceGroupName": "$(azureRandom)-$(azureGroup)-$(environment)",
+                "location": "$(azureLocation)",
+                "templateLocation": "Linked artifact",
+                "csmFileLink": "",
+                "csmParametersFileLink": "",
+                "csmFile": "$(System.DefaultWorkingDirectory)/_azure-fabric-arch-iac/drop/iac-serviceFabric/$(fabricTier).json",
+                "csmParametersFile": "",
+                "overrideParameters": "-prefix $(azureGroup) -vnetName $(armVnetName) -subnet defaultSubnet -lbName $(armLbName) -vaultName $(vaultName) -certificateUrlValue $(certSecretId) -certificateThumbprint $(certThumbprint) -adminUserName $(adminUserName) -adminPassword $(adminPassword) -vmCount $(fabricNodeCount) -vmSize \"Standard_D2_V2\" -storageAccount $(armStorageName) -omsWorkspaceId $(analyticsId) -omsWorkspaceKey $(analyticsKey)",
+                "deploymentMode": "Incremental",
+                "enableDeploymentPrerequisites": "None",
+                "deploymentGroupEndpoint": "",
+                "project": "",
+                "deploymentGroupName": "",
+                "copyAzureVMTags": "true",
+                "runAgentServiceAsUser": "false",
+                "userName": "",
+                "password": "",
+                "outputVariable": "",
+                "deploymentOutputs": "iac-serviceFabric"
+              }
+            }
+          ]
+        }
+      ],
+      "environmentOptions": {
+        "emailNotificationType": "OnlyOnFailure",
+        "emailRecipients": "release.environment.owner;release.creator",
+        "skipArtifactsDownload": false,
+        "timeoutInMinutes": 0,
+        "enableAccessToken": false,
+        "publishDeploymentStatus": true,
+        "badgeEnabled": false,
+        "autoLinkWorkItems": false,
+        "pullRequestDeploymentEnabled": false
+      },
+      "demands": [],
+      "conditions": [
+        {
+          "name": "ReleaseStarted",
+          "conditionType": 1,
+          "value": ""
+        }
+      ],
+      "executionPolicy": {
+        "concurrencyCount": 1,
+        "queueDepthCount": 0
+      },
+      "schedules": [],
+      "retentionPolicy": {
+        "daysToKeep": 30,
+        "releasesToKeep": 3,
+        "retainBuild": true
+      },
+      "processParameters": {},
+      "properties": {},
+      "preDeploymentGates": {
+        "id": 0,
+        "gatesOptions": null,
+        "gates": []
+      },
+      "postDeploymentGates": {
+        "id": 0,
+        "gatesOptions": null,
+        "gates": []
+      },
+      "environmentTriggers": []
+    }
+  ],
+  "artifacts": [
+    {
+      "type": "Build",
+      "alias": "_azure-fabric-arch-iac",
+      "isPrimary": true,
+      "isRetained": false
+    }
+  ],
+  "triggers": [],
+  "releaseNameFormat": "Release-$(rev:r)",
+  "tags": [],
+  "properties": {
+    "DefinitionCreationSource": {
+      "$type": "System.String",
+      "$value": "Other"
+    }
+  },
+  "name": "azure-fabric-arch-iac",
+  "path": "\\",
+  "projectReference": null
+}
