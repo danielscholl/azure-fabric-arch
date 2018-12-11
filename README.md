@@ -4,9 +4,9 @@ This is a Powershell Infrastruture as Code (iac) automation solution for a Secur
 
 [![Build Status](https://cloudcodeit.visualstudio.com/DemoStuff/_apis/build/status/azure-fabric-arch-voting)](https://cloudcodeit.visualstudio.com/DemoStuff/_build/latest?definitionId=31) _Application Quickstart_
 
-SimpleApp [![Build Status](https://cloudcodeit.visualstudio.com/DemoStuff/_apis/build/status/azure-fabric-arch-simpleapp)](https://cloudcodeit.visualstudio.com/DemoStuff/_build/latest?definitionId=32) _Application SimpleApp_
+[![Build Status](https://cloudcodeit.visualstudio.com/DemoStuff/_apis/build/status/azure-fabric-arch-simpleapp)](https://cloudcodeit.visualstudio.com/DemoStuff/_build/latest?definitionId=32) _Application SimpleApp_
 
-Infrastructure [![Build Status](https://cloudcodeit.visualstudio.com/DemoStuff/_apis/build/status/azure-fabric-arch-iac)](https://cloudcodeit.visualstudio.com/DemoStuff/_build/latest?definitionId=33) _Infrastucture as Code_
+[![Build Status](https://cloudcodeit.visualstudio.com/DemoStuff/_apis/build/status/azure-fabric-arch-iac)](https://cloudcodeit.visualstudio.com/DemoStuff/_build/latest?definitionId=33) _Infrastucture as Code_
 
 __Requirements:__
 
