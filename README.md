@@ -2,9 +2,9 @@
 
 This is a Powershell Infrastruture as Code (iac) automation solution for a Secure Service Fabric Architecture.
 
-[![Build Status](https://cloudcodeit.visualstudio.com/DemoStuff/_apis/build/status/azure-fabric-arch-voting)](https://cloudcodeit.visualstudio.com/DemoStuff/_build/latest?definitionId=31) _Application Quickstart_
+[![Build Status](https://dascholl.visualstudio.com/Demos/_apis/build/status/danielscholl.azure-fabric-arch-quickstart?branchName=master)](https://dascholl.visualstudio.com/Demos/_build/latest?definitionId=21?branchName=master) _Application Quickstart_
 
-[![Build Status](https://cloudcodeit.visualstudio.com/DemoStuff/_apis/build/status/azure-fabric-arch-simpleapp)](https://cloudcodeit.visualstudio.com/DemoStuff/_build/latest?definitionId=32) _Application SimpleApp_
+[![Build Status](https://dascholl.visualstudio.com/Demos/_apis/build/status/danielscholl.azure-fabric-arch-simpleapp?branchName=master)](https://dascholl.visualstudio.com/Demos/_build/latest?definitionId=22?branchName=master) _Application SimpleApp_
 
 [![Build Status](https://cloudcodeit.visualstudio.com/DemoStuff/_apis/build/status/azure-fabric-arch-iac)](https://cloudcodeit.visualstudio.com/DemoStuff/_build/latest?definitionId=33) _Infrastucture as Code_
 
