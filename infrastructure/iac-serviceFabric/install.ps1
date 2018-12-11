@@ -13,6 +13,7 @@
 
 Param(
   [string] $Subscription = $env:AZURE_SUBSCRIPTION,
+  [Parameter(Mandatory = $true)] [string] $Environment,
   [string] $ResourceGroupName = "$env:AZURE_RANDOM-$env:AZURE_GROUP",
   [string] $Location = $env:AZURE_LOCATION,
   [string] $Prefix = $env:AZURE_GROUP,
@@ -44,6 +45,7 @@ $armParameters = @{
 ###############################
 $BASE_DIR = Get-ScriptDirectory
 $DEPLOYMENT = Split-Path $BASE_DIR -Leaf
+$ResourceGroupName = "$ResourceGroupName-$Environment"
 LoginAzure
 CreateResourceGroup $ResourceGroupName $Location
 
