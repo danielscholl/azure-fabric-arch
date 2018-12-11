@@ -1,0 +1,19 @@
+resources:
+- repo: self
+
+queue:
+  name: Hosted Ubuntu 1604
+
+variables:
+  SourceDirectory: 'infrastructure'
+
+steps:
+- task: CopyFiles@2
+  displayName: 'Copy Files to: $(build.artifactstagingdirectory)'
+  inputs:
+    SourceFolder: '$(SourceDirectory)'
+    Contents: '**/*.json'
+    TargetFolder: '$(build.artifactstagingdirectory)'
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact: drop'
