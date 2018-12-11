@@ -74,14 +74,14 @@ Write-Color -Text "Key Vault Service Principal: ", "$ID" -Color Green, Red
 Write-Color -Text "`r`n---------------------------------------------------- "-Color Yellow
 Write-Color -Text "Deploying ", "$DEPLOYMENT-$Prefix ", "template..." -Color Green, Red, Green
 Write-Color -Text "---------------------------------------------------- "-Color Yellow
-# New-AzureRmResourceGroupDeployment -Name $DEPLOYMENT-$Prefix `
-#   -TemplateFile $BASE_DIR\azuredeploy.json `
-#   -TemplateParameterFile $BASE_DIR\azuredeploy.parameters.json `
-#   -prefix $Prefix `
-#   -servicePrincipalAppId $ID `
-#   -adminUserName $UserName -adminPassword $UserPass  `
-#   -ResourceGroupName $ResourceGroupName `
-#   -Verbose
+New-AzureRmResourceGroupDeployment -Name $DEPLOYMENT-$Prefix `
+  -TemplateFile $BASE_DIR\azuredeploy.json `
+  -TemplateParameterFile $BASE_DIR\azuredeploy.parameters.json `
+  -prefix $Prefix `
+  -servicePrincipalAppId $ID `
+  -adminUserName $UserName -adminPassword $UserPass  `
+  -ResourceGroupName $ResourceGroupName `
+  -Verbose
 
 # For development purposes, we create a self-signed cluster certificate here.
 Write-Color -Text "Preparing Certificates..." -Color Yellow
@@ -96,7 +96,7 @@ Add-Secret $ResourceGroupName "azureGroup" $env:AZURE_GROUP
 Add-Secret $ResourceGroupName "azureRandom" $env:AZURE_RANDOM
 
 Add-Secret $ResourceGroupName "certThumbprint" $cert.Thumbprint
-Add-Secret $ResourceGroupName "certSecrectId" $cert.SecretId
+Add-Secret $ResourceGroupName "certSecretId" $cert.SecretId
 
 Add-Secret $ResourceGroupName "analyticsId" $env:AZURE_ANALYTICS
 Add-Secret $ResourceGroupName "analyticsKey" $env:AZURE_ANALYTICS_KEY

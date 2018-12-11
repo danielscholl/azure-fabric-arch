@@ -2,6 +2,10 @@
 
 This is a Powershell Infrastruture as Code (iac) automation solution for a Secure Service Fabric Architecture.
 
+Voting  [![Build Status](https://cloudcodeit.visualstudio.com/DemoStuff/_apis/build/status/azure-fabric-arch-voting)](https://cloudcodeit.visualstudio.com/DemoStuff/_build/latest?definitionId=31)
+SimpleApp [![Build Status](https://cloudcodeit.visualstudio.com/DemoStuff/_apis/build/status/azure-fabric-arch-simpleapp)](https://cloudcodeit.visualstudio.com/DemoStuff/_build/latest?definitionId=32)
+Infrastructure [![Build Status](https://cloudcodeit.visualstudio.com/DemoStuff/_apis/build/status/azure-fabric-arch-iac)](https://cloudcodeit.visualstudio.com/DemoStuff/_build/latest?definitionId=33)
+
 __Requirements:__
 
 1. [Windows Powershell](https://docs.microsoft.com/en-us/powershell/scripting/setup/installing-windows-powershell?view=powershell-5.1)
