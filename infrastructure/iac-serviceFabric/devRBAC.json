@@ -116,7 +116,7 @@
     "vaultId": "[resourceId(resourceGroup().name, 'Microsoft.KeyVault/vaults', parameters('vaultName'))]",
     "storageId": "[resourceId(resourceGroup().name, 'Microsoft.Storage/storageAccounts', parameters('storageAccount'))]",
     "clusterName": "[concat(parameters('prefix'), '-cluster')]",
-    "vmNodeType0Name": "[concat(parameters('prefix'), '-vmss')]",
+    "vmNodeType0Name": "primary",
     "vmName": "vm",
     "certificateStoreValue": "My",
     "vmImagePublisher": "MicrosoftWindowsServer",

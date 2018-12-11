@@ -16,12 +16,12 @@
 #Requires -Module @{ModuleName='AzureRM.Resources'; ModuleVersion='5.0'}
 
 param(
-  [boolean] $Base = $false,
+  [boolean] $Prepare = $false,
+  [boolean] $Infrastructure = $false,
   [boolean] $RBAC = $false,
   [boolean] $Cluster = $false,
-  [ValidateSet('publicLB', 'none')] [string] $Routing = "none",
-  [Parameter(Mandatory = $true)] [string] $Environment,
 
+  [Parameter(Mandatory = $true)] [string] $Environment,
   [string] $ResourceGroupName = "$env:AZURE_RANDOM-$env:AZURE_GROUP",
   [string] $Location = $env:AZURE_LOCATION,
   [string] $Prefix = $env:AZURE_GROUP,
@@ -52,19 +52,19 @@ if (Test-Path "$PSScriptRoot\infrastructure\functions.ps1") { . "$PSScriptRoot\i
 Get-ChildItem Env:AZURE*
 Get-ChildItem Env:FABRIC*
 
-if ($Base -eq $true) {
-  Write-Host "Install Base Resources here we go...." -ForegroundColor "cyan"
-  & ./infrastructure/iac-keyvault/install.ps1 -Prefix "sf$Random"
-  & ./infrastructure/iac-storage/install.ps1 -Prefix "sf$Random"
-  & ./infrastructure/iac-network/install.ps1 -Prefix "sf$Random"
+if ($Prepare -eq $true) {
+  Write-Host "Preparing for Install here we go...." -ForegroundColor "cyan"
+  & ./infrastructure/iac-keyvault/install.ps1 -Prefix "sf$Random" -Environment $Environment
 
   Write-Host "---------------------------------------------" -ForegroundColor "blue"
-  Write-Host "Base Components have been installed!!!!!" -ForegroundColor "red"
+  Write-Host "Preparation has been completed!!!!!" -ForegroundColor "red"
   Write-Host "---------------------------------------------" -ForegroundColor "blue"
 }
 
-if ($Routing -eq "publicLB") {
+if ($Infrastructure -eq $true) {
   Write-Host "Install Routing Resources here we go...." -ForegroundColor "cyan"
+  & ./infrastructure/iac-storage/install.ps1 -Prefix "sf$Random"
+  & ./infrastructure/iac-network/install.ps1 -Prefix "sf$Random"
   & ./infrastructure/iac-publicLB/install.ps1 -Prefix "sf$Random"
 
   Write-Host "---------------------------------------------" -ForegroundColor "blue"

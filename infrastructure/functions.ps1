@@ -78,6 +78,16 @@ function GetKeyVault([string]$ResourceGroupName) {
 
   return (Get-AzureRmKeyVault -ResourceGroupName $ResourceGroupName).VaultName
 }
+function Add-Secret ($ResourceGroupName, $SecretName, $SecretValue) {
+  $KeyVault = Get-AzureRmKeyVault -ResourceGroupName $ResourceGroupName
+  if (!$KeyVault) {
+    Write-Error -Message "Key Vault in $ResourceGroupName not found. Please fix and continue"
+    return
+  }
+  Write-Output "Saving Secret $SecretName..."
+  $SecureSecretValue = ConvertTo-SecureString $SecretValue -AsPlainText -Force
+  Set-AzureKeyVaultSecret -VaultName $KeyVault.VaultName -Name $SecretName -SecretValue $SecureSecretValue
+}
 function EnsureSelfSignedCertificate([string]$ResourceGroupName, [string]$CertName) {
   $localPath = "$PSScriptRoot\..\certs\$CertName.pfx"
   $existsLocally = Test-Path $localPath
@@ -190,6 +200,5 @@ function Unregister-ApplicationTypeCompletely([string]$ApplicationTypeName) {
     $t = Unregister-ServiceFabricApplicationType `
       -ApplicationTypeName $ApplicationTypeName -ApplicationTypeVersion $type.ApplicationTypeVersion `
       -Force -Confirm
-
   }
 }
