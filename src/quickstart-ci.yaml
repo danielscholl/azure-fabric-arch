@@ -33,7 +33,7 @@ steps:
 - task: VSBuild@1
   displayName: 'Build Solution'
   inputs:
-    solution: '$(Source)\**\*.sln'
+    solution: '$(SourceDirectory)\**\*.sln'
     msbuildArgs: '/p:Deterministic=true /p:PathMap="$(Agent.BuildDirectory)"=C:\'
     platform: '$(BuildPlatform)'
     configuration: '$(BuildConfiguration)'
