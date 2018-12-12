@@ -35,6 +35,7 @@ if ( !$Location ) { throw "Location Required" }
 
 $armParameters = @{
   prefix = $Prefix;
+  dnsName = "$Prefix-$Environment";
   vmCount = $Instance;
   omsWorkspaceId = $Analytics;
   omsWorkspaceKey = $AnalyticsKey;
@@ -112,15 +113,3 @@ New-AzureRmResourceGroupDeployment -Name $DEPLOYMENT-$Prefix `
 -ResourceGroupName $ResourceGroupName `
 -Verbose
 
-# New-AzureRmResourceGroupDeployment -Name $DEPLOYMENT-$Prefix `
-# -TemplateFile $BASE_DIR\$LEVEL.json `
-# -TemplateParameterFile $BASE_DIR\azuredeploy.parameters.json `
-# -prefix $Prefix `
-# -vnetName $VnetName -subnet $Subnet -lbName $LbName `
-# -vaultName $VaultName -certificateUrlValue $Cert.SecretId -certificateThumbprint $Cert.Thumbprint `
-# -adminUserName $AdminUserName -adminPassword $AdminPassword `
-# -storageAccount $StorageAccountName -vmCount $Instance `
-# -omsWorkspaceId $Analytics -omsWorkspaceKey $AnalyticsKey `
-# -tenantId $Tenant -clusterApplicationId $ClusterAppId -clientApplicationId $ClientAppId `
-# -ResourceGroupName $ResourceGroupName `
-# -Verbose

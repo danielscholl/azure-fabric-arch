@@ -7,6 +7,12 @@
       "metadata": {
         "description": "Small unique string."
       }
+    },
+    "dnsName": {
+      "type": "string",
+      "metadata": {
+        "description": "DNS Prefix"
+      }
     }
   },
   "variables": {
@@ -34,7 +40,7 @@
       },
       "properties": {
         "dnsSettings": {
-          "domainNameLabel": "[parameters('prefix')]"
+          "domainNameLabel": "[parameters('dnsName')]"
         },
         "publicIPAllocationMethod": "Dynamic"
       }

@@ -8,6 +8,12 @@
         "description": "Small unique string."
       }
     },
+    "dnsName": {
+      "type": "string",
+      "metadata": {
+        "description": "DNS Prefix"
+      }
+    },
     "vnetName": {
       "type": "string",
       "metadata": {
@@ -334,7 +340,7 @@
         "addonFeatures": [
           "DnsService"
         ],
-        "managementEndpoint": "[concat('https://', parameters('prefix'), '.', resourceGroup().location, '.cloudapp.azure.com', ':', variables('fabricHttpGatewayPort'))]",
+        "managementEndpoint": "[concat('https://', parameters('dnsName'), '.', resourceGroup().location, '.cloudapp.azure.com', ':', variables('fabricHttpGatewayPort'))]",
         "nodeTypes": [
           {
             "name": "[variables('vmNodeType0Name')]",

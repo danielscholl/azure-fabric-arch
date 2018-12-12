@@ -62,19 +62,19 @@ if ($Prepare -eq $true) {
 }
 
 if ($Infrastructure -eq $true) {
-  Write-Host "Install Routing Resources here we go...." -ForegroundColor "cyan"
-  & ./infrastructure/iac-storage/install.ps1 -Prefix "sf$Random"
-  & ./infrastructure/iac-network/install.ps1 -Prefix "sf$Random"
-  & ./infrastructure/iac-publicLB/install.ps1 -Prefix "sf$Random"
+  Write-Host "Install Infrastructure Resources here we go...." -ForegroundColor "cyan"
+  & ./infrastructure/iac-storage/install.ps1 -Prefix "sf$Random" -Environment $Environment
+  & ./infrastructure/iac-network/install.ps1 -Prefix "sf$Random" -Environment $Environment
+  & ./infrastructure/iac-publicLB/install.ps1 -Prefix "sf$Random" -Environment $Environment
 
   Write-Host "---------------------------------------------" -ForegroundColor "blue"
-  Write-Host "Routing Components have been installed!!!!!" -ForegroundColor "red"
+  Write-Host "Infrastructure Components have been installed!!!!!" -ForegroundColor "red"
   Write-Host "---------------------------------------------" -ForegroundColor "blue"
 }
 
 if ($Cluster -eq $true) {
   Write-Host "Install Cluster Resources here we go...." -ForegroundColor "cyan"
-  & ./infrastructure/iac-serviceFabric/install.ps1 -Prefix "sf$Random"
+  & ./infrastructure/iac-serviceFabric/install.ps1 -Prefix "sf$Random" -Environment $Environment
 
   Write-Host "---------------------------------------------" -ForegroundColor "blue"
   Write-Host "Cluster Components have been installed!!!!!" -ForegroundColor "red"

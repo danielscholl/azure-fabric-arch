@@ -51,6 +51,6 @@ Write-Color -Text "---------------------------------------------------- "-Color 
 New-AzureRmResourceGroupDeployment -Name $DEPLOYMENT-$Prefix `
   -TemplateFile $BASE_DIR\azuredeploy.json `
   -TemplateParameterFile $BASE_DIR\azuredeploy.parameters.json `
-  -prefix $Prefix `
+  -prefix $Prefix -dnsName $Prefix-$Environment `
   -ResourceGroupName $ResourceGroupName `
   -Verbose
