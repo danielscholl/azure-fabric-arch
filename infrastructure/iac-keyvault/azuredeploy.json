@@ -97,6 +97,18 @@
           ]
         }
       ]
+    },
+    {
+      "type": "Microsoft.KeyVault/vaults/providers/locks",
+      "apiVersion": "2016-09-01",
+      "name": "[concat(variables('keyVaultName'), '/Microsoft.Authorization/Protect')]",
+      "dependsOn": [
+          "[resourceId('Microsoft.KeyVault/vaults', variables('keyVaultName'))]"
+      ],
+      "properties": {
+          "level": "CanNotDelete",
+          "notes": "Removing this requires prepare script to be run again."
+      }
     }
   ],
   "outputs": {
