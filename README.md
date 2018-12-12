@@ -74,9 +74,8 @@ __Network Resource Requirements:__
 
 The architecture depends upon the following items:
 
-1. KeyVault - Local Admininstrator Information, Service Fabric Certificates
-1. Azure Storage Account - Diagnostic Storage
-1. Azure Storage Account - Log Storage
+1. KeyVault - Fabric Configuration Information, Service Fabric Certificates
+1. Azure Storage Account - Diagnostic & Logging Storage
 1. Azure Network - 2 Subnets (Small)
 1. Azure Load Balancer - Public Facing Load Balancer with NAT
 1. Azure VM Scale Set with Azure Service Fabric Cluster
@@ -97,6 +96,8 @@ The architecture depends upon the following items:
 >NOTE: ALWAYS USE A NEW POWERSHELL SESSION!!!
 
 ### Create Environment File
+
+Environment files are used as project environments  ie:  dev, test, production and provide a convenient place to place override parameter settings.  The majority of these settings are loaded into a Key Vault to be used for the CI/CD Pipelines.
 
 Create an environment setting file in the root directory ie: `.env_dev.ps1`
 
@@ -119,21 +120,30 @@ Default Environment Settings
 ### Create Resources
 Resources are broken up into sections only for the purpose of not having an excessively long running task.
 
-#### Install Base Resources
-Environment dev (.env_dev.ps1) or prd (.env_prd.ps1)
+#### Prepare the environment
+This will create the resource group and the keyvault, then load all the configurations needed into the Key Vault.  Environments align themselves in the naming conventions used.
+
+dev --> .env_dev.ps1
+test --> .env_test.ps1
+prd --> .env_prd.ps1
 
 ```powershell
-# Install the Base Resources
-./install.ps1 -Base $true -Environment 'dev'
+# Prepare the Base Resources
+./install.ps1 -Prepare $true -Environment 'dev'
 ```
 
-#### Install Routing Resources
+#### Install the supporting infrastructure
+This will setup the storage, network and load balancer resources.
+
 ```powershell
 # Install the Routing Resources
 ./install.ps1 -Routing 'PublicLB' -Environment 'dev'
 ```
 
 #### Enable Active Directory RBAC Integration
+RBAC is an optional security feature that will allow a user to login via Azure AD credentials.  To perform this the user running the script "must" have administration rights within Azure AD, as this will execute the aadtool scripts.
+
+This only needs to be performed 1 time to enable the AD Integration Applications that can be used.
 
 ```powershell
 # Install the Cluster Resources

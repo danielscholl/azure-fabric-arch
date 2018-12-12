@@ -94,6 +94,7 @@ $Env:ThumbPrint = $cert.Thumbprint
 Add-Secret $ResourceGroupName "azureLocation" $env:AZURE_LOCATION
 Add-Secret $ResourceGroupName "azureGroup" $env:AZURE_GROUP
 Add-Secret $ResourceGroupName "azureRandom" $env:AZURE_RANDOM
+Add-Secret $ResourceGroupName "azureEnvironment" $Environment
 
 Add-Secret $ResourceGroupName "certThumbprint" $cert.Thumbprint
 Add-Secret $ResourceGroupName "certSecretId" $cert.SecretId
