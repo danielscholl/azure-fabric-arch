@@ -120,6 +120,15 @@ Default Environment Settings
 ### Create Resources
 Resources are broken up into sections only for the purpose of not having an excessively long running task.
 
+
+#### Login to Azure and set the desired subscription
+
+```powershell
+Login-AzureRmAccount
+Set-AzureRmContext -Subscription "<subscription_name>"
+```
+
+
 #### Prepare the environment
 This will create the resource group and the keyvault, then load all the configurations needed into the Key Vault.  Environments align themselves in the naming conventions used.
 
@@ -132,13 +141,6 @@ prd --> .env_prd.ps1
 ./install.ps1 -Prepare $true -Environment 'dev'
 ```
 
-#### Install the supporting infrastructure
-This will setup the storage, network and load balancer resources.
-
-```powershell
-# Install the Routing Resources
-./install.ps1 -Routing 'PublicLB' -Environment 'dev'
-```
 
 #### Enable Active Directory RBAC Integration
 RBAC is an optional security feature that will allow a user to login via Azure AD credentials.  To perform this the user running the script "must" have administration rights within Azure AD, as this will execute the aadtool scripts.
@@ -153,16 +155,19 @@ This only needs to be performed 1 time to enable the AD Integration Applications
 $Env:CLUSTER_APP = "<your_web_application>"
 $Env:CLIENT_APP = "<your_native_client_app>"
 ```
-> Note: You have to add the desired Users after the cluster is created to the Cluster Application and give them the authorized role.
+> Note: After creation you have to add the user to the Users & Groups fpr the Enterprise Cluster Application and give them the authorized role.
 
-#### Install Cluster Resources
+
+#### Install the supporting infrastructure and cluster resources
+This will setup the storage, network and load balancer resources.
 
 ```powershell
-# Install the Cluster Resources
-./install.ps1 -Cluster $true -Environment 'dev'
+# Install the Routing Resources
+./install.ps1 -Infrastructure $true -Cluster $true  -Environment 'dev'
 ```
 
-#### Install Package Application
+
+#### Install the Application Package
 
 ```powershell
 # Deploy the Ingress Controller  (UI on Port 8080)
@@ -171,5 +176,4 @@ $Env:CLIENT_APP = "<your_native_client_app>"
 # Deploy the Desired Application Package  (UI on Port 80)
 ./deploy.ps1 -Environment dev -Name SimpleApp.SfProd
 ./deploy.ps1 -Environment dev -Name Voting
-
 ```
