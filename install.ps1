@@ -61,6 +61,23 @@ if ($Prepare -eq $true) {
   Write-Host "---------------------------------------------" -ForegroundColor "blue"
 }
 
+if ($RBAC -eq $true) {
+  $tenantId = (Get-AzureRmContext).Tenant.Id
+  $replyUrl = "https://sf$Random-$Environment.$Location.cloudapp.azure.com:19080/Explorer/index.html"
+  $clusterName = "sf$Random"
+
+  Write-Host "Enabling Active Directory RBAC here we go...." -ForegroundColor "cyan"
+  Write-Color "  tenant: ", $tenantId -Color yellow, blue
+  Write-Color "  replyUrl: ", $replyUrl -Color yellow, blue
+  Write-Color "  cluster: ", $clusterName -Color yellow, blue
+
+  & ./infrastructure/aadtool/SetupApplications.ps1 -TenantId $tenantId -ClusterName $clusterName -WebApplicationReplyUrl $replyUrl
+
+  Write-Host "---------------------------------------------" -ForegroundColor "blue"
+  Write-Host "Active Directory RBAC has been installed!!!!!" -ForegroundColor "red"
+  Write-Host "---------------------------------------------" -ForegroundColor "blue"
+}
+
 if ($Infrastructure -eq $true) {
   Write-Host "Install Infrastructure Resources here we go...." -ForegroundColor "cyan"
   & ./infrastructure/iac-storage/install.ps1 -Prefix "sf$Random" -Environment $Environment
@@ -84,19 +101,4 @@ if ($Cluster -eq $true) {
   Write-Color -Text "Endpoint = ", $env:Endpoint -Color green, red
 }
 
-if ($RBAC -eq $true) {
-  $tenantId = (Get-AzureRmContext).Tenant.Id
-  $replyUrl = "https://sf$Random.$Location.cloudapp.azure.com:19080/Explorer/index.html"
-  $clusterName = "sf$Random"
 
-  Write-Host "Enabling Active Directory RBAC here we go...." -ForegroundColor "cyan"
-  Write-Color "  tenant: ", $tenantId -Color yellow, blue
-  Write-Color "  replyUrl: ", $replyUrl -Color yellow, blue
-  Write-Color "  cluster: ", $clusterName -Color yellow, blue
-
-  & ./infrastructure/aadtool/SetupApplications.ps1 -TenantId $tenantId -ClusterName $clusterName -WebApplicationReplyUrl $replyUrl
-
-  Write-Host "---------------------------------------------" -ForegroundColor "blue"
-  Write-Host "Active Directory RBAC has been installed!!!!!" -ForegroundColor "red"
-  Write-Host "---------------------------------------------" -ForegroundColor "blue"
-}
