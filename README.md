@@ -2,11 +2,11 @@
 
 This is a Powershell Infrastruture as Code (iac) automation solution for a Secure Service Fabric Architecture.
 
-[![Build Status](https://dascholl.visualstudio.com/Demos/_apis/build/status/danielscholl.azure-fabric-arch-quickstart?branchName=master)](https://dascholl.visualstudio.com/Demos/_build/latest?definitionId=21?branchName=master) _Application Quickstart_
+[![Build Status](https://dascholl.visualstudio.com/Demos/_apis/build/status/azure-fabric-arch/danielscholl.azure-fabric-arch-quickstart?branchName=master)](https://dascholl.visualstudio.com/Demos/_build/latest?definitionId=21?branchName=master) _Application Quickstart_
 
-[![Build Status](https://dascholl.visualstudio.com/Demos/_apis/build/status/danielscholl.azure-fabric-arch-simpleapp?branchName=master)](https://dascholl.visualstudio.com/Demos/_build/latest?definitionId=22?branchName=master) _Application SimpleApp_
+[![Build Status](https://dascholl.visualstudio.com/Demos/_apis/build/status/azure-fabric-arch/danielscholl.azure-fabric-arch-quickstart?branchName=master)](https://dascholl.visualstudio.com/Demos/_build/latest?definitionId=21?branchName=master) _Application SimpleApp_
 
-[![Build Status](https://cloudcodeit.visualstudio.com/DemoStuff/_apis/build/status/azure-fabric-arch-iac)](https://cloudcodeit.visualstudio.com/DemoStuff/_build/latest?definitionId=33) _Infrastucture as Code_
+[![Build Status](https://dascholl.visualstudio.com/Demos/_apis/build/status/azure-fabric-arch/danielscholl.azure-fabric-arch-iac?branchName=master)](https://dascholl.visualstudio.com/Demos/_build/latest?definitionId=20?branchName=master) _Infrastucture as Code_
 
 __Requirements:__
 
