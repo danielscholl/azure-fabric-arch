@@ -7,6 +7,23 @@ queue:
 variables:
   SourceDirectory: 'infrastructure'
 
+trigger:
+  batch: true
+  branches:
+    include:
+    - master
+  paths:
+    include:
+    - /infrastructure
+
+pr:
+  branches:
+    include:
+    - master
+  paths:
+    include:
+    - /infrastructure
+
 steps:
 - task: CopyFiles@2
   displayName: 'Copy Files to: $(build.artifactstagingdirectory)'

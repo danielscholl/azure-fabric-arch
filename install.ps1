@@ -83,6 +83,7 @@ if ($Infrastructure -eq $true) {
   & ./infrastructure/iac-storage/install.ps1 -Prefix "sf$Random" -Environment $Environment
   & ./infrastructure/iac-network/install.ps1 -Prefix "sf$Random" -Environment $Environment
   & ./infrastructure/iac-publicLB/install.ps1 -Prefix "sf$Random" -Environment $Environment
+  & ./infrastructure/iac-logAnalytics/install.ps1 -Prefix "sf$Random" -Environment $Environment
 
   Write-Host "---------------------------------------------" -ForegroundColor "blue"
   Write-Host "Infrastructure Components have been installed!!!!!" -ForegroundColor "red"

@@ -13,6 +13,23 @@ variables:
   BuildConfiguration: 'release'
   SourceDirectory: 'src/quickstart'
 
+trigger:
+  batch: true
+  branches:
+    include:
+    - master
+  paths:
+    include:
+    - /src/quickstart
+
+pr:
+  branches:
+    include:
+    - master
+  paths:
+    include:
+    - /src/quickstart
+
 steps:
 - task: NuGetToolInstaller@0
   displayName: 'Use NuGet 4.9.1'
