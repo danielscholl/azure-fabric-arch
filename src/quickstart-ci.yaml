@@ -19,15 +19,13 @@ trigger:
     include:
     - master
   paths:
-    exclude:
-    - README.md
+    include:
+    - /src/quickstart
 
 pr:
   branches:
     include:
     - master
-    exclude:
-    - features/experimental/*
   paths:
     include:
     - /src/quickstart

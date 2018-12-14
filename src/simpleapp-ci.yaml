@@ -19,8 +19,8 @@ trigger:
     include:
     - master
   paths:
-    exclude:
-    - README.md
+    include:
+    - /src/simpleapp
 
 pr:
   branches:

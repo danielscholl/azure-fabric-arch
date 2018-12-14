@@ -12,6 +12,9 @@ trigger:
   branches:
     include:
     - master
+  paths:
+    include:
+    - /infrastructure
 
 pr:
   branches:
@@ -19,7 +22,7 @@ pr:
     - master
   paths:
     include:
-    - /src/simpleapp
+    - /infrastructure
 
 steps:
 - task: CopyFiles@2
