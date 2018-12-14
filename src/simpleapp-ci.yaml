@@ -13,6 +13,23 @@ variables:
   BuildConfiguration: 'release'
   SourceDirectory: 'src/simpleapp'
 
+trigger:
+  batch: true
+  branches:
+    include:
+    - master
+  paths:
+    exclude:
+    - README.md
+
+pr:
+  branches:
+    include:
+    - master
+  paths:
+    include:
+    - /src/simpleapp
+
 steps:
 - task: NuGetToolInstaller@0
   displayName: 'Use NuGet 4.9.1'

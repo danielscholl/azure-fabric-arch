@@ -152,6 +152,27 @@ function ImportCertificateIntoKeyVault([string]$ResourceGroupName, [string]$Name
   $securePassword = ConvertTo-SecureString $CertPassword -AsPlainText -Force
   Import-AzureKeyVaultCertificate -VaultName $KeyVaultName -Name $Name -FilePath $CertFilePath -Password $securePassword
 }
+function GetLogAnalyticsWorkspace([string]$ResourceGroupName) {
+  # Required Argument $1 = RESOURCE_GROUP
+
+  if ( !$ResourceGroupName) { throw "ResourceGroupName Required" }
+
+  return (Get-AzureRmOperationalInsightsWorkspace -ResourceGroupName $ResourceGroupName).Name
+}
+function GetLogAnalyticsWorkspaceId([string]$ResourceGroupName, $WorkspaceName) {
+  # Required Argument $1 = RESOURCE_GROUP
+
+  if ( !$ResourceGroupName) { throw "ResourceGroupName Required" }
+
+  return (Get-AzureRmOperationalInsightsWorkspace -ResourceGroupName $ResourceGroupName -Name $WorkspaceName).CustomerId
+}
+function GetLogAnalyticsWorkspaceKey([string]$ResourceGroupName, $WorkspaceName) {
+  # Required Argument $1 = RESOURCE_GROUP
+
+  if ( !$ResourceGroupName) { throw "ResourceGroupName Required" }
+
+  return (Get-AzureRmOperationalInsightsWorkspaceSharedKeys -ResourceGroupName $ResourceGroupName -Name $WorkspaceName).PrimarySharedKey
+}
 function GetStorageAccount([string]$ResourceGroupName) {
   # Required Argument $1 = RESOURCE_GROUP
 

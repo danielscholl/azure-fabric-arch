@@ -1,0 +1,283 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "prefix": {
+      "type": "string",
+      "metadata": {
+        "description": "Small unique string."
+      },
+      "minLength": 2,
+      "maxLength": 11
+    },
+    "tier": {
+      "type": "string",
+      "metadata": {
+        "description": "Log Analytics SKU"
+      },
+      "defaultValue": "Free",
+      "allowedValues": [
+        "Free",
+        "PerGB2018"
+      ]
+    },
+    "omsWorkspaceRegion": {
+      "type": "string",
+      "metadata": {
+        "description": "Specify the region for your Workspace"
+      },
+      "defaultValue": "East US",
+      "allowedValues": [
+        "East US",
+        "West Europe",
+        "Southeast Asia",
+        "Australia Southeast"
+      ]
+    },
+    "table": {
+      "type": "string",
+      "defaultValue": "WADServiceFabric*EventTable",
+      "allowedValues": [
+        "WADWindowsEventLogsTable",
+        "WADServiceFabric*EventTable",
+        "wad-iis-logfiles",
+        "WADETWEventTable"
+      ],
+      "metadata": {
+        "description": "Select the table to add to OMS"
+      }
+    },
+    "storageAccountName": {
+      "type": "string",
+      "metadata": {
+        "description": "Specify the name of the existing storage account to add to OMS"
+      }
+    }
+  },
+  "variables": {
+    "cleanUnique": "[toLower(replace(parameters('prefix'),'-', ''))]",
+    "omsWorkspaceName": "[concat(variables('cleanUnique'), uniqueString(resourceGroup().id))]",
+    "omsWorkspaceId": "[resourceId('Microsoft.OperationalInsights/workspaces', variables('omsWorkspaceName'))]",
+    "batch1": {
+      "solutions": [
+        {
+          "name": "[concat('ServiceFabric', '(', variables('omsWorkspaceName'), ')')]",
+          "marketplaceName": "ServiceFabric"
+        }
+      ]
+    }
+  },
+  "resources": [
+    {
+      "comments": "## Log Analytics Workspace ##",
+      "apiVersion": "2015-11-01-preview",
+      "type": "Microsoft.OperationalInsights/workspaces",
+      "name": "[variables('omsWorkspaceName')]",
+      "location": "[parameters('omsWorkspaceRegion')]",
+      "properties": {
+        "sku": {
+          "name": "[parameters('tier')]"
+        }
+      },
+      "resources": [
+        {
+          "apiVersion": "2015-11-01-preview",
+          "name": "[concat(parameters('storageaccountName'), variables('omsWorkspaceName'))]",
+          "type": "storageinsightconfigs",
+          "dependsOn": [
+            "[concat('Microsoft.OperationalInsights/workspaces/', variables('omsWorkspaceName'))]"
+          ],
+          "properties": {
+            "containers": [],
+            "tables": [
+              "WADWindowsEventLogsTable",
+              "WADServiceFabric*EventTable",
+              "WADETWEventTable"
+            ],
+            "storageAccount": {
+              "id": "[resourceId(resourceGroup().name, 'Microsoft.Storage/storageaccounts/', parameters('storageAccountName'))]",
+              "key": "[listKeys(resourceId(resourceGroup().name, 'Microsoft.Storage/storageAccounts', parameters('storageAccountName')),'2015-06-15').key1]"
+            }
+          }
+        },
+        {
+          "apiVersion": "2015-11-01-preview",
+          "type": "dataSources",
+          "name": "Memory1",
+          "dependsOn": [
+            "[concat('Microsoft.OperationalInsights/workspaces/', variables('omsWorkspaceName'))]"
+          ],
+          "kind": "WindowsPerformanceCounter",
+          "properties": {
+            "objectName": "Memory",
+            "instanceName": "*",
+            "intervalSeconds": 10,
+            "counterName": "Available MBytes"
+          }
+        },
+        {
+          "apiVersion": "2015-11-01-preview",
+          "type": "dataSources",
+          "name": "Memory2",
+          "dependsOn": [
+            "[concat('Microsoft.OperationalInsights/workspaces/', variables('omsWorkspaceName'))]"
+          ],
+          "kind": "WindowsPerformanceCounter",
+          "properties": {
+            "objectName": "Memory",
+            "instanceName": "*",
+            "intervalSeconds": 10,
+            "counterName": "% Committed Bytes In Use"
+          }
+        },
+        {
+          "apiVersion": "2015-11-01-preview",
+          "type": "dataSources",
+          "name": "Network1",
+          "dependsOn": [
+            "[concat('Microsoft.OperationalInsights/workspaces/', variables('omsWorkspaceName'))]"
+          ],
+          "kind": "WindowsPerformanceCounter",
+          "properties": {
+            "objectName": "Network Adapter",
+            "instanceName": "*",
+            "intervalSeconds": 10,
+            "counterName": "Bytes Received/sec"
+          }
+        },
+        {
+          "apiVersion": "2015-11-01-preview",
+          "type": "dataSources",
+          "name": "Network2",
+          "dependsOn": [
+            "[concat('Microsoft.OperationalInsights/workspaces/', variables('omsWorkspaceName'))]"
+          ],
+          "kind": "WindowsPerformanceCounter",
+          "properties": {
+            "objectName": "Network Adapter",
+            "instanceName": "*",
+            "intervalSeconds": 10,
+            "counterName": "Bytes Sent/sec"
+          }
+        },
+        {
+          "apiVersion": "2015-11-01-preview",
+          "type": "dataSources",
+          "name": "Network3",
+          "dependsOn": [
+            "[concat('Microsoft.OperationalInsights/workspaces/', variables('omsWorkspaceName'))]"
+          ],
+          "kind": "WindowsPerformanceCounter",
+          "properties": {
+            "objectName": "Network Adapter",
+            "instanceName": "*",
+            "intervalSeconds": 10,
+            "counterName": "Bytes Total/sec"
+          }
+        },
+        {
+          "apiVersion": "2015-11-01-preview",
+          "type": "dataSources",
+          "name": "CPU1",
+          "dependsOn": [
+            "[concat('Microsoft.OperationalInsights/workspaces/', variables('omsWorkspaceName'))]"
+          ],
+          "kind": "WindowsPerformanceCounter",
+          "properties": {
+            "objectName": "Processor",
+            "instanceName": "_Total",
+            "intervalSeconds": 10,
+            "counterName": "% Processor Time"
+          }
+        },
+        {
+          "apiVersion": "2015-11-01-preview",
+          "type": "dataSources",
+          "name": "CPU2",
+          "dependsOn": [
+            "[concat('Microsoft.OperationalInsights/workspaces/', variables('omsWorkspaceName'))]"
+          ],
+          "kind": "WindowsPerformanceCounter",
+          "properties": {
+            "objectName": "System",
+            "instanceName": "*",
+            "intervalSeconds": 10,
+            "counterName": "Processor Queue Lenght"
+          }
+        },
+        {
+          "apiVersion": "2015-11-01-preview",
+          "type": "dataSources",
+          "name": "System",
+          "dependsOn": [
+            "[concat('Microsoft.OperationalInsights/workspaces/', variables('omsWorkspaceName'))]"
+          ],
+          "kind": "WindowsEvent",
+          "properties": {
+            "eventLogName": "System",
+            "eventTypes": [
+              {
+                "eventType": "Error"
+              },
+              {
+                "eventType": "Warning"
+              }
+            ]
+          }
+        },
+        {
+          "apiVersion": "2015-11-01-preview",
+          "type": "dataSources",
+          "name": "Application",
+          "dependsOn": [
+            "[concat('Microsoft.OperationalInsights/workspaces/', variables('omsWorkspaceName'))]"
+          ],
+          "kind": "WindowsEvent",
+          "properties": {
+            "eventLogName": "Application",
+            "eventTypes": [
+              {
+                "eventType": "Error"
+              },
+              {
+                "eventType": "Warning"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "comments": "## Log Analytics Workspace Solutions ##",
+      "name": "[concat(variables('batch1').solutions[copyIndex()].Name)]",
+      "type": "Microsoft.OperationsManagement/solutions",
+      "apiVersion": "2015-11-01-preview",
+      "location": "[parameters('omsWorkspaceRegion')]",
+      "dependsOn": [
+        "[variables('omsWorkspaceId')]"
+      ],
+      "copy": {
+        "name": "solutionCopy",
+        "count": "[length(variables('batch1').solutions)]"
+      },
+      "properties": {
+        "workspaceResourceId": "[variables('omsWorkspaceId')]"
+      },
+      "plan": {
+        "name": "[variables('batch1').solutions[copyIndex()].name]",
+        "product": "[concat('OMSGallery/', variables('batch1').solutions[copyIndex()].marketplaceName)]",
+        "promotionCode": "",
+        "publisher": "Microsoft"
+      }
+    }
+  ],
+  "outputs": {
+    "omsWorkspace": {
+      "type": "object",
+      "value": {
+        "id": "[variables('omsWorkspaceId')]",
+        "name": "[variables('omsWorkspaceName')]"
+      }
+    }
+  }
+}

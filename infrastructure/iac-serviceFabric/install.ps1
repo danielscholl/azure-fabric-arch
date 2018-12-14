@@ -81,6 +81,14 @@ $armParameters.vnetName = $VnetName
 $armParameters.subnet = $Subnet;
 $armParameters.lbName = $LbName;
 
+Write-Color -Text "Retrieving LogAnalytics Workspace information..." -Color Green
+$WorkspaceName = GetLogAnalyticsWorkspace $ResourceGroupName
+$WorkspaceId = GetLogAnalyticsWorkspaceId $ResourceGroupName $WorkspaceName
+$WorkspaceKey = GetLogAnalyticsWorkspaceKey $ResourceGroupName $WorkspaceName
+Write-Color -Text "$WorkspaceName $WorkspaceId $WorkspaceKey" -Color White
+$armParameters.omsWorkspaceId = $WorkspaceId;
+$armParameters.omsWorkspaceKey = $WorkspaceKey;
+
 Write-Color -Text "Retrieving Credential Parameters..." -Color Green
 $AdminUserName = (Get-AzureKeyVaultSecret -VaultName $VaultName -Name 'adminUserName').SecretValueText
 $AdminPassword = (Get-AzureKeyVaultSecret -VaultName $VaultName -Name 'adminPassword').SecretValue
@@ -112,4 +120,3 @@ New-AzureRmResourceGroupDeployment -Name $DEPLOYMENT-$Prefix `
 -TemplateParameterObject $armParameters `
 -ResourceGroupName $ResourceGroupName `
 -Verbose
-
