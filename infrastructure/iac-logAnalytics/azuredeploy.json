@@ -276,6 +276,7 @@
       "type": "object",
       "value": {
         "id": "[variables('omsWorkspaceId')]",
+        "customerId": "[reference(variables('omsWorkspaceId'), '2015-11-01-preview').customerId]",
         "name": "[variables('omsWorkspaceName')]",
         "key": "[listKeys(variables('omsWorkspaceId'), '2015-03-20').primarySharedKey]"
       }
