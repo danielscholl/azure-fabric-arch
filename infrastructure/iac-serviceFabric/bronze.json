@@ -357,23 +357,9 @@
               }
             ],
             "name": "Security"
-          },
-          {
-            "name": "EventStoreService",
-            "parameters": [
-              {
-                "name": "TargetReplicaSetSize",
-                "value": "3"
-              },
-              {
-                "name": "MinReplicaSetSize",
-                "value": "1"
-              }
-            ]
           }
         ],
         "addonFeatures": [
-          "EventStoreService",
           "DnsService"
         ],
         "managementEndpoint": "[concat('https://', parameters('dnsName'), '.', resourceGroup().location, '.cloudapp.azure.com', ':', variables('fabricHttpGatewayPort'))]",
