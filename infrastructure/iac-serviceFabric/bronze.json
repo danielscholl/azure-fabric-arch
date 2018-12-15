@@ -357,6 +357,19 @@
               }
             ],
             "name": "Security"
+          },
+          {
+            "name": "EventStoreService",
+            "parameters": [
+              {
+                "name": "TargetReplicaSetSize",
+                "value": "3"
+              },
+              {
+                "name": "MinReplicaSetSize",
+                "value": "1"
+              }
+            ]
           }
         ],
         "addonFeatures": [
