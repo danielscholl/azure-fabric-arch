@@ -89,5 +89,14 @@ steps:
     updateOnlyChanged: true
     pkgArtifactName: drop
 
+- task: CopyFiles@2
+  displayName: 'Copy Project Artifact Files'
+  inputs:
+    SourceFolder: '$(system.defaultworkingdirectory)'
+    Contents: |
+     **\PublishProfiles\*.xml
+     **\ApplicationParameters\*.xml
+    TargetFolder: '$(build.artifactstagingdirectory)\projectartifacts'
+
 - task: PublishBuildArtifacts@1
   displayName: 'Publish Artifact: drop'
