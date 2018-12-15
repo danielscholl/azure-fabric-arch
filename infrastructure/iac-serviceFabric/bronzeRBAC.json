@@ -381,6 +381,7 @@
           }
         ],
         "addonFeatures": [
+          "EventStoreService",
           "DnsService"
         ],
         "managementEndpoint": "[concat('https://', parameters('dnsName'), '.', resourceGroup().location, '.cloudapp.azure.com', ':', variables('fabricHttpGatewayPort'))]",
