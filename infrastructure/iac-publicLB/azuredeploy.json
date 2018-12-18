@@ -120,6 +120,15 @@
               "port": 443,
               "protocol": "Tcp"
             }
+          },
+          {
+            "name": "TraefikProbe",
+            "properties": {
+              "intervalInSeconds": 5,
+              "numberOfProbes": 2,
+              "port": 8080,
+              "protocol": "Tcp"
+            }
           }
         ],
         "loadBalancingRules": [
@@ -214,6 +223,25 @@
               "idleTimeoutInMinutes": 5,
               "probe": {
                 "id": "[concat(variables('LBId'), '/probes/HttpsProbe')]"
+              },
+              "protocol": "Tcp"
+            }
+          },
+          {
+            "name": "TraefikRule",
+            "properties": {
+              "backendAddressPool": {
+                "id": "[concat(variables('LBId'), '/backendAddressPools/lbBackEnd')]"
+              },
+              "backendPort": 8080,
+              "enableFloatingIP": false,
+              "frontendIPConfiguration": {
+                "id": "[concat(variables('LBId'), '/frontendIpConfigurations/lbFrontEnd')]"
+              },
+              "frontendPort": 8080,
+              "idleTimeoutInMinutes": 5,
+              "probe": {
+                "id": "[concat(variables('LBId'), '/probes/TraefikProbe')]"
               },
               "protocol": "Tcp"
             }
